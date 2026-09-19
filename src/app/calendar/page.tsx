@@ -157,7 +157,7 @@ export default async function CalendarPage({
       {monthTotal > 0 && (
         <div className="mt-4 flex items-center justify-between rounded-md border border-neutral-200 px-4 py-3">
           <span className="text-sm font-medium">Total for {monthLabel}</span>
-          <span className="text-sm font-semibold">{formatDollars(monthTotal)}</span>
+          <span className="text-sm font-semibold text-red-600">{formatDollars(monthTotal)}</span>
         </div>
       )}
     </main>
