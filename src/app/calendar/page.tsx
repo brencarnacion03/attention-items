@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, RecurringBill } from "@/lib/types";
+import type { AttentionItem, IncomeEntry, RecurringBill } from "@/lib/types";
 import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
 import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
+import { IncomeSection } from "./IncomeSection";
 import { NavButton, PieChartIcon } from "@/components/NavButton";
 
 function formatDollars(amount: number): string {
@@ -50,6 +51,15 @@ export default async function CalendarPage({
     .neq("status", "dismissed");
 
   const { data: recurringBills } = await supabase.from("recurring_bills").select("*");
+
+  const { data: incomeEntries } = await supabase
+    .from("income_entries")
+    .select("*")
+    .gte("received_date", rangeStart)
+    .lte("received_date", rangeEnd)
+    .order("received_date", { ascending: true });
+
+  const totalIncome = (incomeEntries ?? []).reduce((sum, entry) => sum + entry.amount, 0);
 
   const byDay = new Map<number, CalendarEntry[]>();
   const seenSourceIds = new Set<string>();
@@ -134,6 +144,21 @@ export default async function CalendarPage({
         <div className="mt-4 flex items-center justify-between rounded-md border border-neutral-200 px-4 py-3">
           <span className="text-sm font-medium">Total for {monthLabel}</span>
           <span className="text-sm font-semibold text-red-600">{formatDollars(monthTotal)}</span>
+        </div>
+      )}
+
+      <IncomeSection entries={(incomeEntries ?? []) as IncomeEntry[]} defaultDate={rangeStart} monthLabel={monthLabel} />
+
+      {(monthTotal > 0 || totalIncome > 0) && (
+        <div className="mt-3 flex items-center justify-between rounded-md border border-neutral-800 px-4 py-3">
+          <span className="text-sm font-medium">Net for {monthLabel}</span>
+          <span
+            className={`text-sm font-semibold ${
+              totalIncome - monthTotal >= 0 ? "text-green-500" : "text-red-600"
+            }`}
+          >
+            {formatDollars(totalIncome - monthTotal)}
+          </span>
         </div>
       )}
     </main>

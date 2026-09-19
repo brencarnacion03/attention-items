@@ -46,6 +46,15 @@ export interface Classification {
   auto_handleable: boolean;
 }
 
+export interface IncomeEntry {
+  id: string;
+  user_id: string;
+  title: string | null;
+  amount: number;
+  received_date: string;
+  created_at: string;
+}
+
 export interface RecurringBill {
   id: string;
   user_id: string;

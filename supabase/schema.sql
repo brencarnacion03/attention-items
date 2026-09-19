@@ -93,3 +93,29 @@ create policy "Users can insert their own recurring bills"
 create policy "Users can delete their own recurring bills"
   on public.recurring_bills for delete
   using (auth.uid() = user_id);
+
+-- Income entries, shown alongside a month's spending total on the calendar.
+create table if not exists public.income_entries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text,
+  amount numeric(10, 2) not null,
+  received_date date not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists income_entries_user_date_idx on public.income_entries (user_id, received_date);
+
+alter table public.income_entries enable row level security;
+
+create policy "Users can view their own income entries"
+  on public.income_entries for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert their own income entries"
+  on public.income_entries for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete their own income entries"
+  on public.income_entries for delete
+  using (auth.uid() = user_id);
