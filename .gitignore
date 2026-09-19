@@ -6,6 +6,9 @@
 .pnp.js
 .yarn/install-state.gz
 
+# local Node runtime (see README - only needed if your system Node is broken/old)
+/.tools
+
 # testing
 /coverage
 

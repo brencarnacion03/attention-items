@@ -51,9 +51,22 @@ Fill in every value in `.env.local`.
 
 ### 5. Run it
 
+Requires **Node 20+** (the Google provider_token/refresh_token make the session
+cookie large enough that Supabase splits it into chunks, and older Node/undici
+versions choke on that during `fetch`). If `node -v` shows something older:
+
 ```bash
 npm install
 npm run dev
+```
+
+If your system Node can't be upgraded easily, a self-contained copy is enough —
+download a tarball from [nodejs.org](https://nodejs.org), extract it anywhere
+(e.g. `.tools/`, already gitignored), and prepend its `bin/` to `PATH` before
+running the commands above:
+
+```bash
+export PATH="$(pwd)/.tools/node-v22.11.0-darwin-arm64/bin:$PATH"
 ```
 
 Visit `http://localhost:3000`, sign in with Google, and click **Sync now**.
