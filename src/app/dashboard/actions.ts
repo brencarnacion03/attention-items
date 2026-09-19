@@ -44,6 +44,7 @@ export async function setItemStatus(id: string, status: ItemStatus) {
   if (error) throw new Error(error.message);
 
   revalidatePath("/dashboard");
+  revalidatePath("/calendar");
 }
 
 export async function addOneTimeItem(formData: FormData) {
@@ -73,6 +74,7 @@ export async function addOneTimeItem(formData: FormData) {
 
   if (error) throw new Error(error.message);
   revalidatePath("/dashboard");
+  revalidatePath("/calendar");
 }
 
 export async function addRecurringBill(formData: FormData) {
@@ -108,6 +110,7 @@ export async function addRecurringBill(formData: FormData) {
   await materializeOccurrence(supabase, user.id, bill, dayOfMonth);
 
   revalidatePath("/dashboard");
+  revalidatePath("/calendar");
 }
 
 export async function deleteRecurringBill(id: string) {
@@ -125,6 +128,7 @@ export async function deleteRecurringBill(id: string) {
 
   if (error) throw new Error(error.message);
   revalidatePath("/dashboard");
+  revalidatePath("/calendar");
 }
 
 export async function signOut() {

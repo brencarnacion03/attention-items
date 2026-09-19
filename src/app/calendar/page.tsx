@@ -1,22 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, RecurringBill, Urgency } from "@/lib/types";
+import type { AttentionItem, RecurringBill } from "@/lib/types";
 import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
-
-const URGENCY_DOT: Record<Urgency, string> = {
-  red: "bg-red-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-500",
-  blue: "bg-blue-500",
-};
-
-interface CalendarEntry {
-  id: string;
-  title: string;
-  urgency: Urgency;
-  amount: number | null;
-}
+import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -105,6 +92,8 @@ export default async function CalendarPage({
     ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
   ];
 
+  const entriesByDay = Object.fromEntries(byDay);
+
   return (
     <main className="mx-auto max-w-3xl p-8">
       <div className="mb-4 flex items-center justify-between">
@@ -122,37 +111,9 @@ export default async function CalendarPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-neutral-500">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-          <div key={d}>{d}</div>
-        ))}
-      </div>
+      <p className="mb-3 text-xs text-neutral-500">Click any date to add an item.</p>
 
-      <div className="grid grid-cols-7 gap-1">
-        {cells.map((day, i) => (
-          <div
-            key={i}
-            className="min-h-[88px] rounded-md border border-neutral-200 p-1.5 text-left align-top"
-          >
-            {day && (
-              <>
-                <div className="text-xs text-neutral-500">{day}</div>
-                <div className="space-y-0.5">
-                  {(byDay.get(day) ?? []).map((item) => (
-                    <div key={item.id} className="flex items-center gap-1 truncate text-xs">
-                      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`} />
-                      <span className="truncate">
-                        {item.title}
-                        {item.amount != null ? ` ${formatDollars(item.amount)}` : ""}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        ))}
-      </div>
+      <CalendarGrid year={year} monthIndex={monthIndex} cells={cells} entriesByDay={entriesByDay} />
 
       {monthTotal > 0 && (
         <div className="mt-4 flex items-center justify-between rounded-md border border-neutral-200 px-4 py-3">
