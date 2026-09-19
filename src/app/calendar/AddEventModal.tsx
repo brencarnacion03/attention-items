@@ -62,7 +62,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
       onClick={onClose}
     >
       <div
-        className="w-full max-w-sm rounded-xl border border-neutral-200 bg-neutral-950 p-5 shadow-2xl"
+        className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-xl border border-neutral-200 bg-neutral-950 p-5 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between">
@@ -104,7 +104,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
             required
             autoFocus
             placeholder="e.g. Pay furniture installment"
-            className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+            className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
           />
 
           <div className="flex gap-2">
@@ -112,7 +112,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               name="type"
               value={type}
               onChange={(e) => setType(e.target.value as ItemType)}
-              className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+              className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
             >
               {TYPE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -128,7 +128,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
                 min={0}
                 step="0.01"
                 placeholder="optional"
-                className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-sm text-black placeholder:text-neutral-400"
+                className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black placeholder:text-neutral-400"
               />
             </label>
           </div>
@@ -138,12 +138,12 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               <input
                 type="time"
                 name="event_time"
-                className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+                className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
               />
               <input
                 name="address"
                 placeholder="Address (optional)"
-                className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+                className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
               />
             </div>
           )}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Attention Items - Phone Preview</title>
+<style>
+  :root {
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: radial-gradient(circle at top, #1c1c1e, #050505 65%);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px;
+  }
+
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    background: #17171a;
+    border: 1px solid #2c2c2e;
+    padding: 6px;
+    border-radius: 999px;
+  }
+  .toolbar button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: #a1a1aa;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .toolbar button:hover {
+    color: #fff;
+  }
+  .toolbar button.active {
+    background: #fff;
+    color: #000;
+  }
+
+  .phone {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    max-height: 88vh;
+    background: #0a0a0a;
+    border-radius: 56px;
+    padding: 14px;
+    box-shadow:
+      0 0 0 2px #3a3a3c,
+      0 30px 60px -20px rgba(0, 0, 0, 0.8),
+      0 10px 20px -5px rgba(0, 0, 0, 0.6);
+  }
+
+  .screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 42px;
+    overflow: hidden;
+  }
+
+  .notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #0a0a0a;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    z-index: 5;
+  }
+
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.55);
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+  }
+
+  .side-button {
+    position: absolute;
+    background: #3a3a3c;
+  }
+  .power {
+    right: -3px;
+    top: 180px;
+    width: 3px;
+    height: 80px;
+    border-radius: 0 3px 3px 0;
+  }
+  .volume-up {
+    left: -3px;
+    top: 150px;
+    width: 3px;
+    height: 45px;
+    border-radius: 3px 0 0 3px;
+  }
+  .volume-down {
+    left: -3px;
+    top: 205px;
+    width: 3px;
+    height: 45px;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .hint {
+    color: #6b6b70;
+    font-size: 12px;
+    text-align: center;
+    max-width: 393px;
+  }
+</style>
+</head>
+<body>
+  <div class="toolbar" id="toolbar">
+    <button data-path="/login">Login</button>
+    <button data-path="/dashboard" class="active">Dashboard</button>
+    <button data-path="/calendar">Calendar</button>
+    <button data-path="/" title="Reload current page">&#8635;</button>
+  </div>
+
+  <div class="phone">
+    <div class="side-button power"></div>
+    <div class="side-button volume-up"></div>
+    <div class="side-button volume-down"></div>
+    <div class="screen">
+      <div class="notch"></div>
+      <iframe id="app-frame" src="/dashboard"></iframe>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <p class="hint">This is the real app running at real phone width, inside a mockup frame -<br />tap around exactly like you would on a phone.</p>
+
+  <script>
+    const frame = document.getElementById("app-frame");
+    const buttons = document.querySelectorAll(".toolbar button[data-path]");
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const path = btn.getAttribute("data-path");
+        if (path === "/") {
+          frame.src = frame.src;
+          return;
+        }
+        frame.src = path;
+        buttons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

@@ -72,13 +72,13 @@ export function AddItemForm() {
           name="title"
           required
           placeholder={mode === "recurring" ? "e.g. Rent" : "e.g. Pay furniture installment"}
-          className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+          className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
         />
         <select
           name="type"
           value={type}
           onChange={(e) => setType(e.target.value as ItemType)}
-          className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+          className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
         >
           {TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -91,7 +91,7 @@ export function AddItemForm() {
           <input
             type="date"
             name="due_date"
-            className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+            className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
           />
         ) : (
           <>
@@ -104,7 +104,7 @@ export function AddItemForm() {
                 max={28}
                 defaultValue={1}
                 required
-                className="w-16 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-sm text-black"
+                className="w-16 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black"
               />
             </label>
             <label className="flex items-center gap-1.5 text-sm">
@@ -122,7 +122,7 @@ export function AddItemForm() {
             min={0}
             step="0.01"
             placeholder="optional"
-            className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-sm text-black placeholder:text-neutral-400"
+            className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black placeholder:text-neutral-400"
           />
         </label>
 
@@ -131,12 +131,12 @@ export function AddItemForm() {
             <input
               type="time"
               name="event_time"
-              className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+              className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
             />
             <input
               name="address"
               placeholder="Address (optional)"
-              className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+              className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
             />
           </>
         )}
