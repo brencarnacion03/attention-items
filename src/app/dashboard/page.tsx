@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { AttentionItem, RecurringBill, Urgency } from "@/lib/types";
@@ -7,6 +6,7 @@ import { SyncButton } from "./SyncButton";
 import { AddItemForm } from "./AddItemForm";
 import { RecurringBillsList } from "./RecurringBillsList";
 import { signOut } from "./actions";
+import { NavButton, CalendarIcon, PieChartIcon } from "@/components/NavButton";
 
 const URGENCY_ORDER: Urgency[] = ["red", "yellow", "green", "blue"];
 const URGENCY_LABEL: Record<Urgency, string> = {
@@ -58,13 +58,13 @@ export default async function DashboardPage() {
           </h1>
           <p className="text-sm text-neutral-500">{user.email}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/calendar" className="text-xs text-neutral-500 underline">
+        <div className="flex items-center gap-2">
+          <NavButton href="/calendar" icon={<CalendarIcon />}>
             Calendar
-          </Link>
-          <Link href="/spending" className="text-xs text-neutral-500 underline">
+          </NavButton>
+          <NavButton href="/spending" icon={<PieChartIcon />}>
             Spending
-          </Link>
+          </NavButton>
           <SyncButton />
           <form action={signOut}>
             <button className="text-xs text-neutral-500 underline">Sign out</button>

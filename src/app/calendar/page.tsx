@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { AttentionItem, RecurringBill } from "@/lib/types";
 import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
 import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
+import { NavButton, PieChartIcon } from "@/components/NavButton";
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -100,9 +101,9 @@ export default async function CalendarPage({
         <Link href="/dashboard" className="text-xs text-neutral-500 underline sm:text-sm">
           &larr; Back to dashboard
         </Link>
-        <Link href="/spending" className="text-xs text-neutral-500 underline sm:text-sm">
+        <NavButton href="/spending" icon={<PieChartIcon />}>
           Spending
-        </Link>
+        </NavButton>
       </div>
 
       <div className="mb-4">
