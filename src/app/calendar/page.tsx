@@ -95,23 +95,31 @@ export default async function CalendarPage({
   const entriesByDay = Object.fromEntries(byDay);
 
   return (
-    <main className="mx-auto max-w-3xl p-8">
-      <div className="mb-4 flex items-center justify-between">
-        <Link href="/dashboard" className="text-sm text-neutral-500 underline">
-          Back to dashboard
+    <main className="mx-auto max-w-3xl p-4 sm:p-8">
+      <div className="mb-4">
+        <Link href="/dashboard" className="text-xs text-neutral-500 underline sm:text-sm">
+          &larr; Back to dashboard
         </Link>
-        <h1 className="text-lg font-semibold">{monthLabel}</h1>
-        <div className="flex gap-3 text-sm">
-          <Link href={`/calendar?month=${monthParam(prevMonth.getFullYear(), prevMonth.getMonth())}`}>
+        <div className="mt-2 flex items-center justify-center gap-4">
+          <Link
+            href={`/calendar?month=${monthParam(prevMonth.getFullYear(), prevMonth.getMonth())}`}
+            className="shrink-0 text-xs sm:text-sm"
+          >
             &larr; Prev
           </Link>
-          <Link href={`/calendar?month=${monthParam(nextMonth.getFullYear(), nextMonth.getMonth())}`}>
+          <h1 className="text-base font-semibold sm:text-lg">{monthLabel}</h1>
+          <Link
+            href={`/calendar?month=${monthParam(nextMonth.getFullYear(), nextMonth.getMonth())}`}
+            className="shrink-0 text-xs sm:text-sm"
+          >
             Next &rarr;
           </Link>
         </div>
       </div>
 
-      <p className="mb-3 text-xs text-neutral-500">Click any date to add an item.</p>
+      <p className="mb-3 text-center text-xs text-neutral-500 sm:text-left">
+        Click any date to add an item.
+      </p>
 
       <CalendarGrid year={year} monthIndex={monthIndex} cells={cells} entriesByDay={entriesByDay} />
 

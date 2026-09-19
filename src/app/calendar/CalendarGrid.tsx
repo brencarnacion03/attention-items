@@ -42,37 +42,41 @@ export function CalendarGrid({
 
   return (
     <>
-      <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-neutral-500">
+      <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-medium text-neutral-500 sm:gap-1 sm:text-xs">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
-          <div key={d}>{d}</div>
+          <div key={d} className="truncate">
+            {d}
+          </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
         {cells.map((day, i) => (
           <button
             key={i}
             type="button"
             disabled={!day}
             onClick={() => day && setSelectedDay(day)}
-            className={`min-h-[100px] rounded-md border border-neutral-200 p-1.5 text-left align-top transition-colors ${
+            className={`min-h-[64px] min-w-0 overflow-hidden rounded-md border border-neutral-200 p-1 text-left align-top transition-colors sm:min-h-[100px] sm:p-1.5 ${
               day ? "cursor-pointer hover:border-neutral-400 hover:bg-white/5" : "cursor-default"
             }`}
           >
             {day && (
               <>
-                <div className="text-xs text-neutral-500">{day}</div>
-                <div className="space-y-1.5">
+                <div className="text-[10px] text-neutral-500 sm:text-xs">{day}</div>
+                <div className="space-y-1 sm:space-y-1.5">
                   {(entriesByDay[day] ?? []).map((item) => (
-                    <div key={item.id} className="text-xs">
-                      <div className="flex items-start gap-1">
+                    <div key={item.id} className="min-w-0 text-[10px] sm:text-xs">
+                      <div className="flex min-w-0 items-start gap-1">
                         <span
                           className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`}
                         />
-                        <span className="break-words text-left font-semibold">{item.title}</span>
+                        <span className="line-clamp-2 min-w-0 break-words text-left font-semibold">
+                          {item.title}
+                        </span>
                       </div>
                       {item.amount != null && (
-                        <div className="pl-2.5 text-left text-neutral-500">
+                        <div className="truncate pl-2.5 text-left text-neutral-500">
                           {formatDollars(item.amount)}
                         </div>
                       )}
