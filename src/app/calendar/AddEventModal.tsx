@@ -11,14 +11,17 @@ const TYPE_OPTIONS: { value: ItemType; label: string }[] = [
   { value: "appointment", label: "Appointment" },
   { value: "deadline", label: "Deadline" },
   { value: "reservation", label: "Reservation" },
-  { value: "document", label: "Document" },
 ];
+
+const NEEDS_TIME_AND_ADDRESS: ItemType[] = ["appointment", "reservation"];
 
 export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: () => void }) {
   const router = useRouter();
   const [mode, setMode] = useState<"one-time" | "recurring">("one-time");
+  const [type, setType] = useState<ItemType>("bill");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const showTimeAndAddress = NEEDS_TIME_AND_ADDRESS.includes(type);
 
   const dayOfMonth = Number(dateISO.slice(8, 10));
   const dateLabel = new Date(dateISO + "T00:00:00").toLocaleDateString("en-US", {
@@ -107,7 +110,8 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
           <div className="flex gap-2">
             <select
               name="type"
-              defaultValue="bill"
+              value={type}
+              onChange={(e) => setType(e.target.value as ItemType)}
               className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
             >
               {TYPE_OPTIONS.map((opt) => (
@@ -128,6 +132,21 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               />
             </label>
           </div>
+
+          {showTimeAndAddress && (
+            <div className="flex gap-2">
+              <input
+                type="time"
+                name="event_time"
+                className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+              />
+              <input
+                name="address"
+                placeholder="Address (optional)"
+                className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+              />
+            </div>
+          )}
 
           {mode === "recurring" && (
             <label className="flex items-center gap-1.5 text-sm">

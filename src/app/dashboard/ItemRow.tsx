@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { setItemStatus } from "./actions";
+import { AddressLink } from "./AddressLink";
 import type { AttentionItem } from "@/lib/types";
 
 const TYPE_LABEL: Record<AttentionItem["type"], string> = {
@@ -12,6 +13,13 @@ const TYPE_LABEL: Record<AttentionItem["type"], string> = {
   reservation: "Reservation",
   document: "Document",
 };
+
+function formatTime12h(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
+}
 
 export function ItemRow({ item }: { item: AttentionItem }) {
   const [isPending, startTransition] = useTransition();
@@ -27,12 +35,19 @@ export function ItemRow({ item }: { item: AttentionItem }) {
           {item.title}
           {item.amount != null ? ` · $${item.amount.toFixed(2)}` : ""}
         </p>
-        <p className="text-xs text-neutral-500">
+        <div className="text-xs text-neutral-500">
           {TYPE_LABEL[item.type]}
           {item.due_date ? ` · due ${item.due_date}` : ""}
+          {item.event_time ? ` at ${formatTime12h(item.event_time)}` : ""}
+          {item.address && (
+            <>
+              {" · "}
+              <AddressLink address={item.address} />
+            </>
+          )}
           {" · "}
           {item.source}
-        </p>
+        </div>
       </div>
       <div className="flex shrink-0 gap-2">
         <button

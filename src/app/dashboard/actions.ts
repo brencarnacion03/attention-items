@@ -26,6 +26,11 @@ function parseAmount(value: FormDataEntryValue | null): number | null {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
+function parseOptionalText(value: FormDataEntryValue | null): string | null {
+  const raw = String(value ?? "").trim();
+  return raw || null;
+}
+
 export async function setItemStatus(id: string, status: ItemStatus) {
   const supabase = createClient();
   const {
@@ -59,6 +64,8 @@ export async function addOneTimeItem(formData: FormData) {
   const type = parseItemType(formData.get("type"));
   const dueDate = (formData.get("due_date") as string) || null;
   const amount = parseAmount(formData.get("amount"));
+  const eventTime = parseOptionalText(formData.get("event_time"));
+  const address = parseOptionalText(formData.get("address"));
 
   const { error } = await supabase.from("attention_items").insert({
     user_id: user.id,
@@ -67,6 +74,8 @@ export async function addOneTimeItem(formData: FormData) {
     title,
     due_date: dueDate,
     amount,
+    event_time: eventTime,
+    address,
     urgency: urgencyForDueDate(dueDate),
     status: "new",
     auto_handleable: false,
@@ -90,6 +99,8 @@ export async function addRecurringBill(formData: FormData) {
   const dayOfMonth = Math.min(28, Math.max(1, Number(formData.get("day_of_month")) || 1));
   const emailReminder = formData.get("email_reminder") === "on";
   const amount = parseAmount(formData.get("amount"));
+  const eventTime = parseOptionalText(formData.get("event_time"));
+  const address = parseOptionalText(formData.get("address"));
 
   const { data: bill, error } = await supabase
     .from("recurring_bills")
@@ -99,6 +110,8 @@ export async function addRecurringBill(formData: FormData) {
       type,
       day_of_month: dayOfMonth,
       amount,
+      event_time: eventTime,
+      address,
       email_reminder: emailReminder,
     })
     .select()

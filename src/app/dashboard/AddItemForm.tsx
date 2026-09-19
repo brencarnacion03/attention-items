@@ -10,14 +10,17 @@ const TYPE_OPTIONS: { value: ItemType; label: string }[] = [
   { value: "appointment", label: "Appointment" },
   { value: "deadline", label: "Deadline" },
   { value: "reservation", label: "Reservation" },
-  { value: "document", label: "Document" },
 ];
+
+const NEEDS_TIME_AND_ADDRESS: ItemType[] = ["appointment", "reservation"];
 
 export function AddItemForm() {
   const [mode, setMode] = useState<"one-time" | "recurring">("one-time");
+  const [type, setType] = useState<ItemType>("bill");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const showTimeAndAddress = NEEDS_TIME_AND_ADDRESS.includes(type);
 
   const handleSubmit = (formData: FormData) => {
     setError(null);
@@ -29,6 +32,7 @@ export function AddItemForm() {
           await addRecurringBill(formData);
         }
         formRef.current?.reset();
+        setType("bill");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Could not add item.");
       }
@@ -72,7 +76,8 @@ export function AddItemForm() {
         />
         <select
           name="type"
-          defaultValue="bill"
+          value={type}
+          onChange={(e) => setType(e.target.value as ItemType)}
           className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
         >
           {TYPE_OPTIONS.map((opt) => (
@@ -120,6 +125,21 @@ export function AddItemForm() {
             className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-sm text-black placeholder:text-neutral-400"
           />
         </label>
+
+        {showTimeAndAddress && (
+          <>
+            <input
+              type="time"
+              name="event_time"
+              className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black"
+            />
+            <input
+              name="address"
+              placeholder="Address (optional)"
+              className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-black placeholder:text-neutral-400"
+            />
+          </>
+        )}
 
         <button
           type="submit"

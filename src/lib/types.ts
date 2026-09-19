@@ -18,6 +18,8 @@ export interface AttentionItem {
   title: string;
   due_date: string | null;
   amount: number | null;
+  event_time: string | null;
+  address: string | null;
   urgency: Urgency;
   status: ItemStatus;
   auto_handleable: boolean;
@@ -51,6 +53,8 @@ export interface RecurringBill {
   type: ItemType;
   day_of_month: number;
   amount: number | null;
+  event_time: string | null;
+  address: string | null;
   email_reminder: boolean;
   reminder_days_before: number;
   last_reminded_for: string | null;
