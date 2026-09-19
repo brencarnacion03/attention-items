@@ -14,18 +14,30 @@ export function urgencyForDueDate(dueDateISO: string | null): Urgency {
   return "green";
 }
 
+function daysInMonth(year: number, monthIndex: number): number {
+  return new Date(year, monthIndex + 1, 0).getDate();
+}
+
+/** `dayOfMonth` clamped to the given month's last day, for months shorter
+ * than `dayOfMonth` (e.g. day 31 lands on Feb 28/29). */
+export function clampDayToMonth(year: number, monthIndex: number, dayOfMonth: number): number {
+  return Math.min(dayOfMonth, daysInMonth(year, monthIndex));
+}
+
+function dateForDayInMonth(year: number, monthIndex: number, dayOfMonth: number): Date {
+  return new Date(year, monthIndex, clampDayToMonth(year, monthIndex, dayOfMonth));
+}
+
 /** The next occurrence of `dayOfMonth`, today included. */
 export function nextOccurrence(dayOfMonth: number, from: Date = new Date()): Date {
-  const year = from.getFullYear();
-  const month = from.getMonth();
-  const candidate = new Date(year, month, dayOfMonth);
-  candidate.setHours(0, 0, 0, 0);
-
   const today = new Date(from);
   today.setHours(0, 0, 0, 0);
 
+  const candidate = dateForDayInMonth(today.getFullYear(), today.getMonth(), dayOfMonth);
+  candidate.setHours(0, 0, 0, 0);
+
   if (candidate.getTime() < today.getTime()) {
-    candidate.setMonth(candidate.getMonth() + 1);
+    return dateForDayInMonth(today.getFullYear(), today.getMonth() + 1, dayOfMonth);
   }
   return candidate;
 }

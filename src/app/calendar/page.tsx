@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { AttentionItem, IncomeDisplayEntry, RecurringBill, RecurringIncome } from "@/lib/types";
-import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
+import { clampDayToMonth, occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
 import { incomeOccurrencesInRange } from "@/lib/recurringIncome";
 import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
 import { IncomeSection } from "./IncomeSection";
@@ -108,13 +108,14 @@ export default async function CalendarPage({
   // be, if the occurrence is in the past) - the calendar shows the recurring
   // rule itself, not just the one "currently actionable" occurrence.
   for (const bill of (recurringBills ?? []) as RecurringBill[]) {
-    const occurrence = new Date(year, monthIndex, bill.day_of_month);
+    const day = clampDayToMonth(year, monthIndex, bill.day_of_month);
+    const occurrence = new Date(year, monthIndex, day);
     const dueDate = toISODate(occurrence);
     const sourceId = occurrenceSourceId(bill.id, occurrence);
     if (seenSourceIds.has(sourceId)) continue;
 
-    byDay.set(bill.day_of_month, [
-      ...(byDay.get(bill.day_of_month) ?? []),
+    byDay.set(day, [
+      ...(byDay.get(day) ?? []),
       { id: sourceId, title: bill.title, urgency: urgencyForDueDate(dueDate), amount: bill.amount },
     ]);
   }

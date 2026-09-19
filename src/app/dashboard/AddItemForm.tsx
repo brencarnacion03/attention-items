@@ -103,12 +103,15 @@ export function AddItemForm() {
                 type="number"
                 name="day_of_month"
                 min={1}
-                max={28}
+                max={31}
                 defaultValue={1}
                 required
                 className="w-16 rounded-xl border border-neutral-300 bg-white px-2 py-1.5 text-base text-black"
               />
             </label>
+            <span className="basis-full text-xs text-neutral-500">
+              Months without that day use the last day of the month instead.
+            </span>
             <label className="flex items-center gap-1.5 text-sm">
               <input type="checkbox" name="email_reminder" defaultChecked />
               Email reminder

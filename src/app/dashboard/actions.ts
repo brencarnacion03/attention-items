@@ -96,7 +96,7 @@ export async function addRecurringBill(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   if (!title) throw new Error("Title is required.");
   const type = parseItemType(formData.get("type"));
-  const dayOfMonth = Math.min(28, Math.max(1, Number(formData.get("day_of_month")) || 1));
+  const dayOfMonth = Math.min(31, Math.max(1, Number(formData.get("day_of_month")) || 1));
   const emailReminder = formData.get("email_reminder") === "on";
   const amount = parseAmount(formData.get("amount"));
   const eventTime = parseOptionalText(formData.get("event_time"));

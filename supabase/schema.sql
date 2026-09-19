@@ -70,7 +70,7 @@ create table if not exists public.recurring_bills (
   user_id uuid not null references auth.users(id) on delete cascade,
   title text not null,
   type text not null check (type in ('bill', 'renewal', 'appointment', 'deadline', 'reservation', 'document')),
-  day_of_month int not null check (day_of_month between 1 and 28),
+  day_of_month int not null check (day_of_month between 1 and 31),
   amount numeric(10, 2),
   event_time text,
   address text,

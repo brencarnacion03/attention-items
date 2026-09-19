@@ -174,7 +174,11 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
           )}
 
           <p className="text-xs text-neutral-500">
-            {mode === "recurring" ? `Repeats on day ${dayOfMonth} of every month.` : `Due ${dateLabel}.`}
+            {mode === "recurring"
+              ? `Repeats on day ${dayOfMonth} of every month${
+                  dayOfMonth > 28 ? " (or the last day, in shorter months)" : ""
+                }.`
+              : `Due ${dateLabel}.`}
           </p>
 
           {error && <p className="text-xs text-red-600">{error}</p>}
