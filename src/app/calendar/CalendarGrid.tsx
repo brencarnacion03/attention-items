@@ -57,8 +57,8 @@ export function CalendarGrid({
             type="button"
             disabled={!day}
             onClick={() => day && setSelectedDay(day)}
-            className={`min-h-[64px] min-w-0 overflow-hidden rounded-md border border-neutral-200 p-1 text-left align-top transition-colors sm:min-h-[100px] sm:p-1.5 ${
-              day ? "cursor-pointer hover:border-neutral-400 hover:bg-white/5" : "cursor-default"
+            className={`min-h-[64px] min-w-0 overflow-hidden rounded-xl border border-neutral-200 p-1 text-left align-top transition-transform sm:min-h-[100px] sm:p-1.5 ${
+              day ? "cursor-pointer hover:border-neutral-400 hover:bg-white/5 active:scale-95" : "cursor-default"
             }`}
           >
             {day && (

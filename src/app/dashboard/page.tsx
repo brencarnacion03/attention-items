@@ -6,7 +6,7 @@ import { SyncButton } from "./SyncButton";
 import { AddItemForm } from "./AddItemForm";
 import { RecurringBillsList } from "./RecurringBillsList";
 import { signOut } from "./actions";
-import { NavButton, CalendarIcon, PieChartIcon } from "@/components/NavButton";
+import { TabBar } from "@/components/TabBar";
 
 const URGENCY_ORDER: Urgency[] = ["red", "yellow", "green", "blue"];
 const URGENCY_LABEL: Record<Urgency, string> = {
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
   const total = items?.length ?? 0;
 
   return (
-    <main className="mx-auto max-w-2xl p-8">
+    <main className="mx-auto max-w-2xl p-8 pb-28">
       <div className="mb-6 flex items-start justify-between">
         <div>
           <h1 className="text-xl font-semibold">
@@ -58,16 +58,12 @@ export default async function DashboardPage() {
           </h1>
           <p className="text-sm text-neutral-500">{user.email}</p>
         </div>
-        <div className="flex items-center gap-2">
-          <NavButton href="/calendar" icon={<CalendarIcon />}>
-            Calendar
-          </NavButton>
-          <NavButton href="/spending" icon={<PieChartIcon />}>
-            Spending
-          </NavButton>
+        <div className="flex items-center gap-3">
           <SyncButton />
           <form action={signOut}>
-            <button className="text-xs text-neutral-500 underline">Sign out</button>
+            <button className="text-xs text-neutral-500 underline transition-transform active:scale-90">
+              Sign out
+            </button>
           </form>
         </div>
       </div>
@@ -100,6 +96,8 @@ export default async function DashboardPage() {
           );
         })}
       </div>
+
+      <TabBar active="dashboard" />
     </main>
   );
 }

@@ -5,7 +5,7 @@ import type { AttentionItem, IncomeEntry, RecurringBill } from "@/lib/types";
 import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
 import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
 import { IncomeSection } from "./IncomeSection";
-import { NavButton, PieChartIcon } from "@/components/NavButton";
+import { TabBar } from "@/components/TabBar";
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -106,28 +106,19 @@ export default async function CalendarPage({
   const entriesByDay = Object.fromEntries(byDay);
 
   return (
-    <main className="mx-auto max-w-3xl p-4 sm:p-8">
-      <div className="mb-4 flex items-center justify-between">
-        <Link href="/dashboard" className="text-xs text-neutral-500 underline sm:text-sm">
-          &larr; Back to dashboard
-        </Link>
-        <NavButton href="/spending" icon={<PieChartIcon />}>
-          Spending
-        </NavButton>
-      </div>
-
+    <main className="mx-auto max-w-3xl p-4 pb-28 sm:p-8">
       <div className="mb-4">
         <div className="flex items-center justify-center gap-4">
           <Link
             href={`/calendar?month=${monthParam(prevMonth.getFullYear(), prevMonth.getMonth())}`}
-            className="shrink-0 text-xs sm:text-sm"
+            className="shrink-0 rounded-full px-2 py-1 text-xs transition-transform active:scale-90 sm:text-sm"
           >
             &larr; Prev
           </Link>
           <h1 className="text-base font-semibold sm:text-lg">{monthLabel}</h1>
           <Link
             href={`/calendar?month=${monthParam(nextMonth.getFullYear(), nextMonth.getMonth())}`}
-            className="shrink-0 text-xs sm:text-sm"
+            className="shrink-0 rounded-full px-2 py-1 text-xs transition-transform active:scale-90 sm:text-sm"
           >
             Next &rarr;
           </Link>
@@ -141,7 +132,7 @@ export default async function CalendarPage({
       <CalendarGrid year={year} monthIndex={monthIndex} cells={cells} entriesByDay={entriesByDay} />
 
       {monthTotal > 0 && (
-        <div className="mt-4 flex items-center justify-between rounded-md border border-neutral-200 px-4 py-3">
+        <div className="mt-4 flex items-center justify-between rounded-2xl border border-neutral-200 px-4 py-3 shadow-sm">
           <span className="text-sm font-medium">Total for {monthLabel}</span>
           <span className="text-sm font-semibold text-red-600">{formatDollars(monthTotal)}</span>
         </div>
@@ -150,7 +141,7 @@ export default async function CalendarPage({
       <IncomeSection entries={(incomeEntries ?? []) as IncomeEntry[]} defaultDate={rangeStart} monthLabel={monthLabel} />
 
       {(monthTotal > 0 || totalIncome > 0) && (
-        <div className="mt-3 flex items-center justify-between rounded-md border border-neutral-800 px-4 py-3">
+        <div className="mt-3 flex items-center justify-between rounded-2xl border border-neutral-800 px-4 py-3 shadow-sm">
           <span className="text-sm font-medium">Net for {monthLabel}</span>
           <span
             className={`text-sm font-semibold ${
@@ -161,6 +152,8 @@ export default async function CalendarPage({
           </span>
         </div>
       )}
+
+      <TabBar active="calendar" />
     </main>
   );
 }

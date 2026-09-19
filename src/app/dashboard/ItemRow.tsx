@@ -29,7 +29,11 @@ export function ItemRow({ item }: { item: AttentionItem }) {
   };
 
   return (
-    <li className="flex items-center justify-between gap-4 rounded-md border border-neutral-200 px-4 py-3">
+    <li
+      className={`flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 px-4 py-3 shadow-sm transition-all duration-200 ${
+        isPending ? "scale-[0.98] opacity-40" : "scale-100 opacity-100"
+      }`}
+    >
       <div className="min-w-0">
         <p className="truncate text-sm font-medium">
           {item.title}
@@ -53,14 +57,14 @@ export function ItemRow({ item }: { item: AttentionItem }) {
         <button
           onClick={() => act("handled")}
           disabled={isPending}
-          className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium hover:bg-neutral-100 disabled:opacity-50"
+          className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs font-medium transition-transform hover:bg-neutral-100 active:scale-90 disabled:opacity-50"
         >
           Handled
         </button>
         <button
           onClick={() => act("dismissed")}
           disabled={isPending}
-          className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs font-medium hover:bg-neutral-100 disabled:opacity-50"
+          className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs font-medium transition-transform hover:bg-neutral-100 active:scale-90 disabled:opacity-50"
         >
           Dismiss
         </button>

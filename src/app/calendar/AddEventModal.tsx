@@ -14,6 +14,7 @@ const TYPE_OPTIONS: { value: ItemType; label: string }[] = [
 ];
 
 const NEEDS_TIME_AND_ADDRESS: ItemType[] = ["appointment", "reservation"];
+const TRANSITION_MS = 220;
 
 export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: () => void }) {
   const router = useRouter();
@@ -21,6 +22,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
   const [type, setType] = useState<ItemType>("bill");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
   const showTimeAndAddress = NEEDS_TIME_AND_ADDRESS.includes(type);
 
   const dayOfMonth = Number(dateISO.slice(8, 10));
@@ -32,10 +34,20 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
   });
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
+  }, []);
+
+  const close = () => {
+    setVisible(false);
+    setTimeout(onClose, TRANSITION_MS);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = (formData: FormData) => {
     setError(null);
@@ -49,7 +61,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
           await addRecurringBill(formData);
         }
         router.refresh();
-        onClose();
+        close();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Could not add item.");
       }
@@ -57,46 +69,52 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50">
       <div
-        className="max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-xl border border-neutral-200 bg-neutral-950 p-5 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
+        onClick={close}
+        className={`absolute inset-0 bg-black/60 transition-opacity duration-[220ms] ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
+      />
+      <div
+        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-neutral-800 bg-neutral-950 shadow-2xl transition-transform duration-[220ms] ease-out ${
+          visible ? "translate-y-0" : "translate-y-full"
+        }`}
       >
-        <div className="mb-4 flex items-start justify-between">
+        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-neutral-700" />
+
+        <div className="flex items-start justify-between px-5 pb-1 pt-4">
           <h2 className="text-sm font-semibold">{dateLabel}</h2>
           <button
             type="button"
-            onClick={onClose}
+            onClick={close}
             aria-label="Close"
-            className="text-neutral-500 hover:text-white"
+            className="-m-1.5 rounded-full p-1.5 text-neutral-500 transition-transform active:scale-90 hover:text-white"
           >
             &times;
           </button>
         </div>
 
-        <form action={handleSubmit} className="space-y-3">
-          <div className="flex items-center gap-4 text-sm">
-            <label className="flex items-center gap-1.5">
-              <input
-                type="radio"
-                name="mode"
-                checked={mode === "one-time"}
-                onChange={() => setMode("one-time")}
-              />
+        <form action={handleSubmit} className="space-y-3 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2">
+          <div className="flex rounded-xl bg-neutral-900 p-1 text-sm">
+            <button
+              type="button"
+              onClick={() => setMode("one-time")}
+              className={`flex-1 rounded-lg py-2 font-medium transition-all ${
+                mode === "one-time" ? "bg-white text-black" : "text-neutral-400"
+              }`}
+            >
               One-time
-            </label>
-            <label className="flex items-center gap-1.5">
-              <input
-                type="radio"
-                name="mode"
-                checked={mode === "recurring"}
-                onChange={() => setMode("recurring")}
-              />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("recurring")}
+              className={`flex-1 rounded-lg py-2 font-medium transition-all ${
+                mode === "recurring" ? "bg-white text-black" : "text-neutral-400"
+              }`}
+            >
               Recurring monthly
-            </label>
+            </button>
           </div>
 
           <input
@@ -104,7 +122,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
             required
             autoFocus
             placeholder="e.g. Pay furniture installment"
-            className="w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+            className="w-full rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-base text-black placeholder:text-neutral-400"
           />
 
           <div className="flex gap-2">
@@ -112,7 +130,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               name="type"
               value={type}
               onChange={(e) => setType(e.target.value as ItemType)}
-              className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+              className="flex-1 rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-base text-black"
             >
               {TYPE_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -128,7 +146,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
                 min={0}
                 step="0.01"
                 placeholder="optional"
-                className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black placeholder:text-neutral-400"
+                className="w-24 rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-base text-black placeholder:text-neutral-400"
               />
             </label>
           </div>
@@ -138,12 +156,12 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               <input
                 type="time"
                 name="event_time"
-                className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+                className="rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-base text-black"
               />
               <input
                 name="address"
                 placeholder="Address (optional)"
-                className="flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+                className="flex-1 rounded-xl border border-neutral-300 bg-white px-3 py-2.5 text-base text-black placeholder:text-neutral-400"
               />
             </div>
           )}
@@ -161,22 +179,13 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
 
           {error && <p className="text-xs text-red-600">{error}</p>}
 
-          <div className="flex justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
-            >
-              {isPending ? "Adding..." : "Add"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="w-full rounded-xl bg-white py-3 text-base font-semibold text-black transition-transform active:scale-[0.98] disabled:opacity-50"
+          >
+            {isPending ? "Adding..." : "Add"}
+          </button>
         </form>
       </div>
     </div>

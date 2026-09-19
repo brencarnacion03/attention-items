@@ -43,28 +43,30 @@ export function AddItemForm() {
     <form
       ref={formRef}
       action={handleSubmit}
-      className="mb-6 space-y-3 rounded-md border border-neutral-200 p-4"
+      className="mb-6 space-y-3 rounded-2xl border border-neutral-200 p-4 shadow-sm"
     >
-      <div className="flex items-center gap-4 text-sm">
-        <span className="font-medium">Add an item</span>
-        <label className="flex items-center gap-1.5">
-          <input
-            type="radio"
-            name="mode"
-            checked={mode === "one-time"}
-            onChange={() => setMode("one-time")}
-          />
-          One-time
-        </label>
-        <label className="flex items-center gap-1.5">
-          <input
-            type="radio"
-            name="mode"
-            checked={mode === "recurring"}
-            onChange={() => setMode("recurring")}
-          />
-          Recurring monthly
-        </label>
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium">Add an item</span>
+        <div className="flex flex-1 rounded-xl bg-neutral-900 p-1 text-sm">
+          <button
+            type="button"
+            onClick={() => setMode("one-time")}
+            className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
+              mode === "one-time" ? "bg-white text-black" : "text-neutral-400"
+            }`}
+          >
+            One-time
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("recurring")}
+            className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
+              mode === "recurring" ? "bg-white text-black" : "text-neutral-400"
+            }`}
+          >
+            Recurring monthly
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -72,13 +74,13 @@ export function AddItemForm() {
           name="title"
           required
           placeholder={mode === "recurring" ? "e.g. Rent" : "e.g. Pay furniture installment"}
-          className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+          className="min-w-[180px] flex-1 rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
         />
         <select
           name="type"
           value={type}
           onChange={(e) => setType(e.target.value as ItemType)}
-          className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+          className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
         >
           {TYPE_OPTIONS.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -91,7 +93,7 @@ export function AddItemForm() {
           <input
             type="date"
             name="due_date"
-            className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+            className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
           />
         ) : (
           <>
@@ -104,7 +106,7 @@ export function AddItemForm() {
                 max={28}
                 defaultValue={1}
                 required
-                className="w-16 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black"
+                className="w-16 rounded-xl border border-neutral-300 bg-white px-2 py-1.5 text-base text-black"
               />
             </label>
             <label className="flex items-center gap-1.5 text-sm">
@@ -122,7 +124,7 @@ export function AddItemForm() {
             min={0}
             step="0.01"
             placeholder="optional"
-            className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-base text-black placeholder:text-neutral-400"
+            className="w-24 rounded-xl border border-neutral-300 bg-white px-2 py-1.5 text-base text-black placeholder:text-neutral-400"
           />
         </label>
 
@@ -131,12 +133,12 @@ export function AddItemForm() {
             <input
               type="time"
               name="event_time"
-              className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+              className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
             />
             <input
               name="address"
               placeholder="Address (optional)"
-              className="min-w-[180px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+              className="min-w-[180px] flex-1 rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
             />
           </>
         )}
@@ -144,7 +146,7 @@ export function AddItemForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-md bg-black px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+          className="rounded-xl bg-black px-4 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
         >
           {isPending ? "Adding..." : "Add"}
         </button>

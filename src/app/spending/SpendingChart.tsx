@@ -151,7 +151,7 @@ export function SpendingChart({
               onClick={() => toggle(slice.type)}
               onMouseEnter={() => setHovered(slice.type)}
               onMouseLeave={() => setHovered(null)}
-              className={`flex w-full items-center gap-2.5 rounded-lg border px-3 py-2 text-left transition-colors ${
+              className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-transform active:scale-[0.97] ${
                 selected === slice.type
                   ? "border-white bg-white/10"
                   : "border-neutral-800 hover:border-neutral-600"
@@ -173,10 +173,14 @@ export function SpendingChart({
       </div>
 
       {selectedCategory && (
-        <div className="mt-6 rounded-lg border border-neutral-800 p-4">
+        <div className="mt-6 rounded-2xl border border-neutral-800 p-4 shadow-sm">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-white">{selectedCategory.label} items</h2>
-            <button type="button" onClick={() => setSelected(null)} className="text-xs text-neutral-500 underline">
+            <button
+              type="button"
+              onClick={() => setSelected(null)}
+              className="rounded-full px-2 py-1 text-xs text-neutral-500 underline transition-transform active:scale-90"
+            >
               Clear
             </button>
           </div>
@@ -198,7 +202,7 @@ export function SpendingChart({
         <button
           type="button"
           onClick={() => setShowTable((v) => !v)}
-          className="text-xs text-neutral-500 underline"
+          className="rounded-full px-3 py-1.5 text-xs text-neutral-500 underline transition-transform active:scale-90"
         >
           {showTable ? "Hide table view" : "View as table"}
         </button>

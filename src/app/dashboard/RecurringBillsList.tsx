@@ -18,7 +18,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
         {bills.map((bill) => (
           <li
             key={bill.id}
-            className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-1.5 text-sm"
+            className="flex items-center justify-between rounded-2xl border border-neutral-200 px-3.5 py-2 text-sm shadow-sm transition-opacity"
           >
             <span>
               {bill.title}
@@ -29,7 +29,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
             <button
               disabled={isPending}
               onClick={() => startTransition(() => deleteRecurringBill(bill.id))}
-              className="text-xs text-neutral-500 underline disabled:opacity-50"
+              className="rounded-full px-2 py-1 text-xs text-neutral-500 underline transition-transform active:scale-90 disabled:opacity-50"
             >
               Remove
             </button>
