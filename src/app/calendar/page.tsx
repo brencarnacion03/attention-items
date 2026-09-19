@@ -96,11 +96,17 @@ export default async function CalendarPage({
 
   return (
     <main className="mx-auto max-w-3xl p-4 sm:p-8">
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <Link href="/dashboard" className="text-xs text-neutral-500 underline sm:text-sm">
           &larr; Back to dashboard
         </Link>
-        <div className="mt-2 flex items-center justify-center gap-4">
+        <Link href="/spending" className="text-xs text-neutral-500 underline sm:text-sm">
+          Spending
+        </Link>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center justify-center gap-4">
           <Link
             href={`/calendar?month=${monthParam(prevMonth.getFullYear(), prevMonth.getMonth())}`}
             className="shrink-0 text-xs sm:text-sm"

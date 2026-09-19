@@ -62,6 +62,9 @@ export default async function DashboardPage() {
           <Link href="/calendar" className="text-xs text-neutral-500 underline">
             Calendar
           </Link>
+          <Link href="/spending" className="text-xs text-neutral-500 underline">
+            Spending
+          </Link>
           <SyncButton />
           <form action={signOut}>
             <button className="text-xs text-neutral-500 underline">Sign out</button>
