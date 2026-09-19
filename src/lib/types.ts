@@ -1,4 +1,4 @@
-export type ItemSource = "gmail" | "calendar";
+export type ItemSource = "gmail" | "calendar" | "manual";
 export type ItemType =
   | "bill"
   | "renewal"
@@ -41,4 +41,16 @@ export interface Classification {
   due_date: string | null;
   urgency: Urgency | null;
   auto_handleable: boolean;
+}
+
+export interface RecurringBill {
+  id: string;
+  user_id: string;
+  title: string;
+  type: ItemType;
+  day_of_month: number;
+  email_reminder: boolean;
+  reminder_days_before: number;
+  last_reminded_for: string | null;
+  created_at: string;
 }

@@ -1,8 +1,11 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, Urgency } from "@/lib/types";
+import type { AttentionItem, RecurringBill, Urgency } from "@/lib/types";
 import { ItemRow } from "./ItemRow";
 import { SyncButton } from "./SyncButton";
+import { AddItemForm } from "./AddItemForm";
+import { RecurringBillsList } from "./RecurringBillsList";
 import { signOut } from "./actions";
 
 const URGENCY_ORDER: Urgency[] = ["red", "yellow", "green", "blue"];
@@ -33,6 +36,11 @@ export default async function DashboardPage() {
     .eq("status", "new")
     .order("due_date", { ascending: true, nullsFirst: false });
 
+  const { data: recurringBills } = await supabase
+    .from("recurring_bills")
+    .select("*")
+    .order("day_of_month", { ascending: true });
+
   const grouped = new Map<Urgency, AttentionItem[]>();
   for (const urgency of URGENCY_ORDER) grouped.set(urgency, []);
   for (const item of (items ?? []) as AttentionItem[]) {
@@ -51,12 +59,18 @@ export default async function DashboardPage() {
           <p className="text-sm text-neutral-500">{user.email}</p>
         </div>
         <div className="flex items-center gap-3">
+          <Link href="/calendar" className="text-xs text-neutral-500 underline">
+            Calendar
+          </Link>
           <SyncButton />
           <form action={signOut}>
             <button className="text-xs text-neutral-500 underline">Sign out</button>
           </form>
         </div>
       </div>
+
+      <AddItemForm />
+      <RecurringBillsList bills={(recurringBills ?? []) as RecurringBill[]} />
 
       {total === 0 && (
         <p className="rounded-md border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
