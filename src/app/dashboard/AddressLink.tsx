@@ -5,15 +5,21 @@ import { MAP_PROVIDERS, mapProviderLabel, mapsUrl, type MapProvider } from "@/li
 
 const TRANSITION_MS = 220;
 
+const TILE_BACKGROUND: Record<MapProvider, string> = {
+  google: "linear-gradient(180deg, #ffffff 0%, #eef0f2 100%)",
+  apple: "linear-gradient(180deg, #ffffff 0%, #e9eef5 100%)",
+  waze: "linear-gradient(180deg, #4fdcff 0%, #05b3ea 100%)",
+};
+
 // Hand-built to match each brand's real colors and iconic silhouette (a Google Maps
 // pin is genuinely a four-color pinwheel; Apple Maps' mark is a road map card with a
 // red pin; Waze's is its light-blue "Moodie" mascot) rather than a downloaded asset -
 // there's no way to embed the literal official file here, so this is the closest
-// faithful approximation of each.
-function ProviderIcon({ provider }: { provider: MapProvider }) {
+// faithful caricature of each, drawn to sit inside its own app-icon-style tile.
+function ProviderGlyph({ provider }: { provider: MapProvider }) {
   if (provider === "google") {
     return (
-      <svg viewBox="0 0 24 24" className="h-9 w-9" aria-hidden="true">
+      <svg viewBox="0 0 24 24" className="h-9 w-9 drop-shadow-sm" aria-hidden="true">
         <path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8z" fill="#EA4335" />
         <path d="M12 2v8L5.1 13.9C4.4 12 4 11 4 10c0-4.4 3.6-8 8-8z" fill="#4285F4" />
         <path d="M12 2v8l6.9 3.9c.7-1.9 1.1-2.9 1.1-3.9 0-4.4-3.6-8-8-8z" fill="#FBBC04" />
@@ -25,35 +31,45 @@ function ProviderIcon({ provider }: { provider: MapProvider }) {
   if (provider === "apple") {
     return (
       <svg viewBox="0 0 24 24" className="h-9 w-9" aria-hidden="true">
-        <rect x="1" y="1" width="22" height="22" rx="6" fill="#fff" stroke="#e5e5e5" />
         <path
-          d="M4 15.5 8.5 7l3.5 5.5L15 8l5 8"
-          stroke="#8ab4f8"
-          strokeWidth="1.4"
+          d="M3.5 16 8 7.2l3.5 5.6L14.8 8l5.7 8.4"
+          stroke="#34a1f0"
+          strokeWidth="1.3"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
+          opacity="0.9"
         />
         <path
-          d="M12 6c-1.7 0-3 1.3-3 3 0 2.3 3 6.2 3 6.2s3-3.9 3-6.2c0-1.7-1.3-3-3-3z"
-          fill="#FF3B30"
+          d="M3.5 18.3 9 9.8l3 5.2 3.2-6 5.3 9"
+          stroke="#8ab4f8"
+          strokeWidth="1"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.55"
         />
-        <circle cx="12" cy="9.1" r="1.1" fill="#fff" />
+        <path
+          d="M12 5.4c-2 0-3.6 1.6-3.6 3.6 0 2.8 3.6 7.4 3.6 7.4s3.6-4.6 3.6-7.4c0-2-1.6-3.6-3.6-3.6z"
+          fill="#FF3B30"
+          stroke="#fff"
+          strokeWidth="0.6"
+        />
+        <circle cx="12" cy="9.1" r="1.2" fill="#fff" />
       </svg>
     );
   }
   return (
     <svg viewBox="0 0 24 24" className="h-9 w-9" aria-hidden="true">
-      <rect x="1" y="1" width="22" height="22" rx="6" fill="#05C8F7" />
       <path
         d="M12 5c-3.3 0-6 2.5-6 5.6 0 1.8 1 3.4 2.5 4.4L8 17l2.3-1a7 7 0 0 0 1.7.2c3.3 0 6-2.5 6-5.6S15.3 5 12 5z"
         fill="#fff"
       />
-      <circle cx="9.8" cy="10.2" r="0.9" fill="#05C8F7" />
-      <circle cx="14.2" cy="10.2" r="0.9" fill="#05C8F7" />
+      <circle cx="9.8" cy="10.2" r="0.9" fill="#05b3ea" />
+      <circle cx="14.2" cy="10.2" r="0.9" fill="#05b3ea" />
       <path
         d="M9.8 12.6c.6.6 1.4.9 2.2.9s1.6-.3 2.2-.9"
-        stroke="#05C8F7"
+        stroke="#05b3ea"
         strokeWidth="1"
         fill="none"
         strokeLinecap="round"
@@ -107,14 +123,14 @@ export function AddressLink({ address }: { address: string }) {
           >
             <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-neutral-700" />
 
-            <div className="px-4 pb-1 pt-4">
+            <div className="px-4 pb-2 pt-4 text-center">
               <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
                 Get directions to
               </p>
               <p className="truncate text-sm text-neutral-300">{address}</p>
             </div>
 
-            <div className="mt-2 divide-y divide-neutral-800 border-t border-neutral-800">
+            <div className="flex justify-center gap-6 px-6 pb-2 pt-3">
               {MAP_PROVIDERS.map((provider) => (
                 <a
                   key={provider}
@@ -122,10 +138,20 @@ export function AddressLink({ address }: { address: string }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={hide}
-                  className="flex items-center gap-3 px-4 py-3.5 text-base text-white transition-colors active:bg-white/10"
+                  className="flex w-20 flex-col items-center gap-2 transition-transform duration-150 active:scale-90"
                 >
-                  <ProviderIcon provider={provider} />
-                  {mapProviderLabel(provider)}
+                  <span
+                    className="flex h-16 w-16 items-center justify-center rounded-[20px] ring-1 ring-black/10"
+                    style={{
+                      background: TILE_BACKGROUND[provider],
+                      boxShadow: "0 4px 10px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.4)",
+                    }}
+                  >
+                    <ProviderGlyph provider={provider} />
+                  </span>
+                  <span className="text-center text-xs font-medium leading-tight text-neutral-300">
+                    {mapProviderLabel(provider)}
+                  </span>
                 </a>
               ))}
             </div>
@@ -133,7 +159,7 @@ export function AddressLink({ address }: { address: string }) {
             <button
               type="button"
               onClick={hide}
-              className="mx-4 mb-1 mt-2 w-[calc(100%-2rem)] rounded-xl border border-neutral-700 py-3 text-base font-medium text-white active:bg-white/10"
+              className="mx-4 mb-1 mt-3 w-[calc(100%-2rem)] rounded-xl border border-neutral-700 py-3 text-base font-medium text-white transition-transform active:scale-[0.98] active:bg-white/10"
             >
               Cancel
             </button>
