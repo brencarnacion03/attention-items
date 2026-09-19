@@ -41,7 +41,15 @@ by urgency.
 
 Create a key at [console.anthropic.com](https://console.anthropic.com).
 
-### 4. Local environment
+### 4. Resend API key (optional — only for recurring bill email reminders)
+
+Create a free account and API key at [resend.com](https://resend.com). Without
+domain verification, Resend's sandbox sender can only deliver to the email
+address your Resend account itself is registered with — fine for a personal,
+single-user app. Skip this and leave `RESEND_API_KEY` blank if you don't want
+email reminders; recurring bills still show up on the dashboard either way.
+
+### 5. Local environment
 
 ```bash
 cp .env.example .env.local
@@ -49,7 +57,7 @@ cp .env.example .env.local
 
 Fill in every value in `.env.local`.
 
-### 5. Run it
+### 6. Run it
 
 Requires **Node 20+** (the Google provider_token/refresh_token make the session
 cookie large enough that Supabase splits it into chunks, and older Node/undici
@@ -95,6 +103,16 @@ Visit `http://localhost:3000`, sign in with Google, and click **Sync now**.
   attention-worthy results into `attention_items`, deduped by `source_id`.
 - The dashboard reads `attention_items` for the signed-in user (scoped by Row
   Level Security), grouped by urgency and sorted by due date.
+- Manually-added one-time items and recurring bills insert straight into
+  `attention_items` as the signed-in user (`source = 'manual'`), scoped by
+  their own RLS insert policy — no service role involved.
+- `/api/recurring` (cron-triggered daily via `vercel.json`) walks every row in
+  `recurring_bills`, ensures the current month's occurrence exists in
+  `attention_items` (created once, then only its urgency is refreshed — a
+  dismissed/handled occurrence is never revived), and emails a reminder via
+  Resend once per occurrence if it's due within `reminder_days_before` days.
+- `/calendar` is a read-only month grid of everything in `attention_items`
+  with a due date, color-dotted by urgency.
 
 ## Not in V1
 
