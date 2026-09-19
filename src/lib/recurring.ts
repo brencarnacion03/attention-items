@@ -12,7 +12,7 @@ import type { RecurringBill } from "./types";
 export async function materializeOccurrence(
   supabase: SupabaseClient,
   userId: string,
-  bill: Pick<RecurringBill, "id" | "title" | "type">,
+  bill: Pick<RecurringBill, "id" | "title" | "type" | "amount">,
   dayOfMonth: number
 ) {
   const occurrence = nextOccurrence(dayOfMonth);
@@ -35,6 +35,7 @@ export async function materializeOccurrence(
       type: bill.type,
       title: bill.title,
       due_date: dueDate,
+      amount: bill.amount,
       urgency,
       status: "new",
       auto_handleable: false,

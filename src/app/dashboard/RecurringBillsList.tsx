@@ -21,7 +21,9 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
             className="flex items-center justify-between rounded-md border border-neutral-200 px-3 py-1.5 text-sm"
           >
             <span>
-              {bill.title} · day {bill.day_of_month} of each month
+              {bill.title}
+              {bill.amount != null ? ` · $${bill.amount.toFixed(2)}` : ""} · day{" "}
+              {bill.day_of_month} of each month
               {bill.email_reminder ? ` · emails ${bill.reminder_days_before}d before` : ""}
             </span>
             <button

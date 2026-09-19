@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, Urgency } from "@/lib/types";
+import type { AttentionItem, RecurringBill, Urgency } from "@/lib/types";
+import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
 
 const URGENCY_DOT: Record<Urgency, string> = {
   red: "bg-red-500",
@@ -9,6 +10,17 @@ const URGENCY_DOT: Record<Urgency, string> = {
   green: "bg-green-500",
   blue: "bg-blue-500",
 };
+
+interface CalendarEntry {
+  id: string;
+  title: string;
+  urgency: Urgency;
+  amount: number | null;
+}
+
+function formatDollars(amount: number): string {
+  return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
 
 function parseMonthParam(month: string | undefined): { year: number; monthIndex: number } {
   if (month && /^\d{4}-\d{2}$/.test(month)) {
@@ -49,12 +61,40 @@ export default async function CalendarPage({
     .lte("due_date", rangeEnd)
     .neq("status", "dismissed");
 
-  const byDay = new Map<number, AttentionItem[]>();
+  const { data: recurringBills } = await supabase.from("recurring_bills").select("*");
+
+  const byDay = new Map<number, CalendarEntry[]>();
+  const seenSourceIds = new Set<string>();
+
   for (const item of (items ?? []) as AttentionItem[]) {
     if (!item.due_date) continue;
+    seenSourceIds.add(item.source_id);
     const day = Number(item.due_date.slice(8, 10));
-    byDay.set(day, [...(byDay.get(day) ?? []), item]);
+    byDay.set(day, [
+      ...(byDay.get(day) ?? []),
+      { id: item.id, title: item.title, urgency: item.urgency, amount: item.amount },
+    ]);
   }
+
+  // Project each recurring bill onto its day in this month too, even for
+  // months that haven't been materialized into attention_items yet (or won't
+  // be, if the occurrence is in the past) - the calendar shows the recurring
+  // rule itself, not just the one "currently actionable" occurrence.
+  for (const bill of (recurringBills ?? []) as RecurringBill[]) {
+    const occurrence = new Date(year, monthIndex, bill.day_of_month);
+    const dueDate = toISODate(occurrence);
+    const sourceId = occurrenceSourceId(bill.id, occurrence);
+    if (seenSourceIds.has(sourceId)) continue;
+
+    byDay.set(bill.day_of_month, [
+      ...(byDay.get(bill.day_of_month) ?? []),
+      { id: sourceId, title: bill.title, urgency: urgencyForDueDate(dueDate), amount: bill.amount },
+    ]);
+  }
+
+  const monthTotal = Array.from(byDay.values())
+    .flat()
+    .reduce((sum, entry) => sum + (entry.amount ?? 0), 0);
 
   const prevMonth = new Date(year, monthIndex - 1, 1);
   const nextMonth = new Date(year, monthIndex + 1, 1);
@@ -101,7 +141,10 @@ export default async function CalendarPage({
                   {(byDay.get(day) ?? []).map((item) => (
                     <div key={item.id} className="flex items-center gap-1 truncate text-xs">
                       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`} />
-                      <span className="truncate">{item.title}</span>
+                      <span className="truncate">
+                        {item.title}
+                        {item.amount != null ? ` ${formatDollars(item.amount)}` : ""}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -110,6 +153,13 @@ export default async function CalendarPage({
           </div>
         ))}
       </div>
+
+      {monthTotal > 0 && (
+        <div className="mt-4 flex items-center justify-between rounded-md border border-neutral-200 px-4 py-3">
+          <span className="text-sm font-medium">Total for {monthLabel}</span>
+          <span className="text-sm font-semibold">{formatDollars(monthTotal)}</span>
+        </div>
+      )}
     </main>
   );
 }

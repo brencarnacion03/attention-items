@@ -109,6 +109,18 @@ export function AddItemForm() {
           </>
         )}
 
+        <label className="flex items-center gap-1.5 text-sm">
+          $
+          <input
+            type="number"
+            name="amount"
+            min={0}
+            step="0.01"
+            placeholder="optional"
+            className="w-24 rounded-md border border-neutral-300 bg-white px-2 py-1.5 text-sm text-black placeholder:text-neutral-400"
+          />
+        </label>
+
         <button
           type="submit"
           disabled={isPending}

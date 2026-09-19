@@ -23,7 +23,10 @@ export function ItemRow({ item }: { item: AttentionItem }) {
   return (
     <li className="flex items-center justify-between gap-4 rounded-md border border-neutral-200 px-4 py-3">
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{item.title}</p>
+        <p className="truncate text-sm font-medium">
+          {item.title}
+          {item.amount != null ? ` · $${item.amount.toFixed(2)}` : ""}
+        </p>
         <p className="text-xs text-neutral-500">
           {TYPE_LABEL[item.type]}
           {item.due_date ? ` · due ${item.due_date}` : ""}
