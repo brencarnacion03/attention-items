@@ -119,3 +119,32 @@ create policy "Users can insert their own income entries"
 create policy "Users can delete their own income entries"
   on public.income_entries for delete
   using (auth.uid() = user_id);
+
+-- User-defined recurring paychecks (weekly/biweekly). Rather than materializing
+-- into income_entries, each occurrence is projected onto the calendar on the
+-- fly from start_date + frequency (see src/lib/recurringIncome.ts).
+create table if not exists public.recurring_income (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text,
+  amount numeric(10, 2) not null,
+  frequency text not null check (frequency in ('weekly', 'biweekly')),
+  start_date date not null,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists recurring_income_user_idx on public.recurring_income (user_id);
+
+alter table public.recurring_income enable row level security;
+
+create policy "Users can view their own recurring income"
+  on public.recurring_income for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert their own recurring income"
+  on public.recurring_income for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete their own recurring income"
+  on public.recurring_income for delete
+  using (auth.uid() = user_id);

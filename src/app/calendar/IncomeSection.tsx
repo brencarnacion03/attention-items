@@ -1,25 +1,32 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { addIncomeEntry, deleteIncomeEntry } from "./actions";
-import type { IncomeEntry } from "@/lib/types";
+import { addIncomeEntry, addRecurringIncome, deleteIncomeEntry, deleteRecurringIncome } from "./actions";
+import type { IncomeDisplayEntry, IncomeFrequency } from "@/lib/types";
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
+
+const FREQUENCY_OPTIONS: { value: IncomeFrequency; label: string }[] = [
+  { value: "weekly", label: "Weekly" },
+  { value: "biweekly", label: "Biweekly" },
+];
 
 export function IncomeSection({
   entries,
   defaultDate,
   monthLabel,
 }: {
-  entries: IncomeEntry[];
+  entries: IncomeDisplayEntry[];
   defaultDate: string;
   monthLabel: string;
 }) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"one-time" | "recurring">("one-time");
+  const [frequency, setFrequency] = useState<IncomeFrequency>("biweekly");
   const formRef = useRef<HTMLFormElement>(null);
 
   const total = entries.reduce((sum, e) => sum + e.amount, 0);
@@ -28,7 +35,12 @@ export function IncomeSection({
     setError(null);
     startTransition(async () => {
       try {
-        await addIncomeEntry(formData);
+        if (mode === "one-time") {
+          await addIncomeEntry(formData);
+        } else {
+          formData.set("frequency", frequency);
+          await addRecurringIncome(formData);
+        }
         formRef.current?.reset();
         setOpen(false);
       } catch (err) {
@@ -37,8 +49,14 @@ export function IncomeSection({
     });
   };
 
+  const handleRemove = (entry: IncomeDisplayEntry) => {
+    startTransition(() =>
+      entry.recurring ? deleteRecurringIncome(entry.removeId) : deleteIncomeEntry(entry.removeId)
+    );
+  };
+
   return (
-    <div className="mt-3 rounded-md border border-neutral-800 px-4 py-3">
+    <div className="mt-3 rounded-2xl border border-neutral-800 px-4 py-3 shadow-sm">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium">Income for {monthLabel}</span>
         <div className="flex items-center gap-3">
@@ -46,7 +64,7 @@ export function IncomeSection({
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="text-xs text-neutral-500 underline"
+            className="rounded-full px-2 py-1 text-xs text-neutral-500 underline transition-transform active:scale-90"
           >
             {open ? "Close" : "+ Add income"}
           </button>
@@ -58,17 +76,18 @@ export function IncomeSection({
           {entries.map((entry) => (
             <li key={entry.id} className="flex items-center justify-between text-xs text-neutral-400">
               <span className="min-w-0 truncate">
-                {entry.title || "Income"} &middot; {entry.received_date}
+                {entry.title || "Income"} &middot; {entry.date}
+                {entry.recurring && <span className="text-neutral-600"> &middot; recurring</span>}
               </span>
               <span className="flex shrink-0 items-center gap-2">
                 <span className="font-medium text-neutral-200">{formatDollars(entry.amount)}</span>
                 <button
                   type="button"
-                  onClick={() => startTransition(() => deleteIncomeEntry(entry.id))}
+                  onClick={() => handleRemove(entry)}
                   disabled={isPending}
-                  className="text-neutral-600 underline hover:text-neutral-400 disabled:opacity-50"
+                  className="rounded-full px-1.5 py-0.5 text-neutral-600 underline transition-transform hover:text-neutral-400 active:scale-90 disabled:opacity-50"
                 >
-                  Remove
+                  {entry.recurring ? "Stop series" : "Remove"}
                 </button>
               </span>
             </li>
@@ -77,36 +96,95 @@ export function IncomeSection({
       )}
 
       {open && (
-        <form ref={formRef} action={handleSubmit} className="mt-3 flex flex-wrap gap-2 border-t border-neutral-800 pt-3">
-          <input
-            name="title"
-            placeholder="e.g. Paycheck (optional)"
-            className="min-w-[160px] flex-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
-          />
-          <input
-            type="number"
-            name="amount"
-            min={0}
-            step="0.01"
-            required
-            placeholder="$"
-            className="w-24 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
-          />
-          <input
-            type="date"
-            name="received_date"
-            defaultValue={defaultDate}
-            required
-            className="rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
-          />
-          <button
-            type="submit"
-            disabled={isPending}
-            className="rounded-md bg-green-600 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
-          >
-            {isPending ? "Adding..." : "Add"}
-          </button>
-          {error && <p className="w-full text-xs text-red-500">{error}</p>}
+        <form ref={formRef} action={handleSubmit} className="mt-3 space-y-2 border-t border-neutral-800 pt-3">
+          <div className="flex rounded-xl bg-neutral-900 p-1 text-sm">
+            <button
+              type="button"
+              onClick={() => setMode("one-time")}
+              className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
+                mode === "one-time" ? "bg-white text-black" : "text-neutral-400"
+              }`}
+            >
+              One-time
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("recurring")}
+              className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
+                mode === "recurring" ? "bg-white text-black" : "text-neutral-400"
+              }`}
+            >
+              Recurring paycheck
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <input
+              name="title"
+              placeholder="e.g. Paycheck (optional)"
+              className="min-w-[160px] flex-1 rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+            />
+            <input
+              type="number"
+              name="amount"
+              min={0}
+              step="0.01"
+              required
+              placeholder="$"
+              className="w-24 rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black placeholder:text-neutral-400"
+            />
+
+            {mode === "one-time" ? (
+              <input
+                type="date"
+                name="received_date"
+                defaultValue={defaultDate}
+                required
+                className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+              />
+            ) : (
+              <>
+                <select
+                  value={frequency}
+                  onChange={(e) => setFrequency(e.target.value as IncomeFrequency)}
+                  className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+                >
+                  {FREQUENCY_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <label className="flex items-center gap-1.5 text-xs text-neutral-400">
+                  Starting
+                  <input
+                    type="date"
+                    name="start_date"
+                    defaultValue={defaultDate}
+                    required
+                    className="rounded-xl border border-neutral-300 bg-white px-2.5 py-1.5 text-base text-black"
+                  />
+                </label>
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={isPending}
+              className="rounded-xl bg-green-600 px-3 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
+            >
+              {isPending ? "Adding..." : "Add"}
+            </button>
+          </div>
+
+          {mode === "recurring" && (
+            <p className="text-xs text-neutral-500">
+              Adds a paycheck every {frequency === "weekly" ? "week" : "2 weeks"} - it&rsquo;ll show up on
+              the calendar automatically, no need to re-enter it each time.
+            </p>
+          )}
+
+          {error && <p className="text-xs text-red-500">{error}</p>}
         </form>
       )}
     </div>

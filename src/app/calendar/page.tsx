@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, IncomeEntry, RecurringBill } from "@/lib/types";
+import type { AttentionItem, IncomeDisplayEntry, RecurringBill, RecurringIncome } from "@/lib/types";
 import { occurrenceSourceId, toISODate, urgencyForDueDate } from "@/lib/urgency";
+import { incomeOccurrencesInRange } from "@/lib/recurringIncome";
 import { CalendarGrid, type CalendarEntry } from "./CalendarGrid";
 import { IncomeSection } from "./IncomeSection";
 import { TabBar } from "@/components/TabBar";
@@ -59,7 +60,35 @@ export default async function CalendarPage({
     .lte("received_date", rangeEnd)
     .order("received_date", { ascending: true });
 
-  const totalIncome = (incomeEntries ?? []).reduce((sum, entry) => sum + entry.amount, 0);
+  const { data: recurringIncome } = await supabase.from("recurring_income").select("*");
+
+  const incomeDisplayEntries: IncomeDisplayEntry[] = (incomeEntries ?? []).map((entry) => ({
+    id: entry.id,
+    title: entry.title,
+    amount: entry.amount,
+    date: entry.received_date,
+    recurring: false,
+    removeId: entry.id,
+  }));
+
+  // Project each recurring paycheck onto every date it lands on within this
+  // month, so the user only has to enter it once instead of every period.
+  for (const rule of (recurringIncome ?? []) as RecurringIncome[]) {
+    for (const date of incomeOccurrencesInRange(rule.start_date, rule.frequency, rangeStart, rangeEnd)) {
+      incomeDisplayEntries.push({
+        id: `recurring-income-${rule.id}-${date}`,
+        title: rule.title,
+        amount: rule.amount,
+        date,
+        recurring: true,
+        removeId: rule.id,
+      });
+    }
+  }
+
+  incomeDisplayEntries.sort((a, b) => a.date.localeCompare(b.date));
+
+  const totalIncome = incomeDisplayEntries.reduce((sum, entry) => sum + entry.amount, 0);
 
   const byDay = new Map<number, CalendarEntry[]>();
   const seenSourceIds = new Set<string>();
@@ -138,7 +167,7 @@ export default async function CalendarPage({
         </div>
       )}
 
-      <IncomeSection entries={(incomeEntries ?? []) as IncomeEntry[]} defaultDate={rangeStart} monthLabel={monthLabel} />
+      <IncomeSection entries={incomeDisplayEntries} defaultDate={rangeStart} monthLabel={monthLabel} />
 
       {(monthTotal > 0 || totalIncome > 0) && (
         <div className="mt-3 flex items-center justify-between rounded-2xl border border-neutral-800 px-4 py-3 shadow-sm">

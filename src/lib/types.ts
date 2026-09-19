@@ -55,6 +55,31 @@ export interface IncomeEntry {
   created_at: string;
 }
 
+export type IncomeFrequency = "weekly" | "biweekly";
+
+export interface RecurringIncome {
+  id: string;
+  user_id: string;
+  title: string | null;
+  amount: number;
+  frequency: IncomeFrequency;
+  start_date: string;
+  created_at: string;
+}
+
+/** A single income entry as shown on the calendar - either a manually-added
+ * one-time entry, or one occurrence of a recurring paycheck projected onto
+ * the current month. */
+export interface IncomeDisplayEntry {
+  id: string;
+  title: string | null;
+  amount: number;
+  date: string;
+  recurring: boolean;
+  /** id of the row to delete: an income_entries.id, or a recurring_income.id for a recurring entry (removes the whole series). */
+  removeId: string;
+}
+
 export interface RecurringBill {
   id: string;
   user_id: string;
