@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { AttentionItem, ItemType } from "@/lib/types";
+import type { AttentionItem, ItemType, RecurringIncome } from "@/lib/types";
+import { incomeOccurrencesInRange } from "@/lib/recurringIncome";
 import { SpendingChart, type SpendingCategory } from "./SpendingChart";
 import { TabBar } from "@/components/TabBar";
+
+function formatDollars(amount: number): string {
+  return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
 
 type Granularity = "daily" | "weekly" | "monthly" | "yearly";
 
@@ -141,6 +146,23 @@ export default async function SpendingPage({
 
   const totalAmount = (items ?? []).reduce((sum, item) => sum + (item.amount ?? 0), 0);
 
+  const rangeStartISO = toISODate(start);
+  const rangeEndISO = toISODate(end);
+
+  const { data: incomeEntries } = await supabase
+    .from("income_entries")
+    .select("*")
+    .gte("received_date", rangeStartISO)
+    .lte("received_date", rangeEndISO);
+
+  const { data: recurringIncome } = await supabase.from("recurring_income").select("*");
+
+  let totalIncome = (incomeEntries ?? []).reduce((sum, entry) => sum + entry.amount, 0);
+  for (const rule of (recurringIncome ?? []) as RecurringIncome[]) {
+    const occurrences = incomeOccurrencesInRange(rule.start_date, rule.frequency, rangeStartISO, rangeEndISO);
+    totalIncome += occurrences.length * rule.amount;
+  }
+
   const categories: SpendingCategory[] = CATEGORY_ORDER.filter((type) => (byType.get(type) ?? []).length > 0).map(
     (type) => {
       const typeItems = byType.get(type) ?? [];
@@ -197,6 +219,29 @@ export default async function SpendingPage({
       </div>
 
       <SpendingChart categories={categories} totalAmount={totalAmount} periodLabel={periodLabel(granularity, start, end)} />
+
+      {(totalIncome > 0 || totalAmount > 0) && (
+        <div className="mt-6 space-y-2">
+          <div className="flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+            <span className="text-sm font-medium text-sand-100">
+              Income for {periodLabel(granularity, start, end)}
+            </span>
+            <span className="text-sm font-semibold text-hunter-400">{formatDollars(totalIncome)}</span>
+          </div>
+          <div className="flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+            <span className="text-sm font-medium text-sand-100">
+              Net for {periodLabel(granularity, start, end)}
+            </span>
+            <span
+              className={`text-sm font-semibold ${
+                totalIncome - totalAmount >= 0 ? "text-hunter-400" : "text-red-500"
+              }`}
+            >
+              {formatDollars(totalIncome - totalAmount)}
+            </span>
+          </div>
+        </div>
+      )}
 
       <TabBar active="spending" />
     </main>
