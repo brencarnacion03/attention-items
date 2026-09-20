@@ -95,6 +95,15 @@ export interface RecurringBill {
   created_at: string;
 }
 
+export interface GoalContribution {
+  id: string;
+  user_id: string;
+  goal_id: string;
+  amount: number;
+  contributed_at: string;
+  created_at: string;
+}
+
 export interface SavingsGoal {
   id: string;
   user_id: string;

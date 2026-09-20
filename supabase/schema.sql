@@ -180,3 +180,31 @@ create policy "Users can update their own savings goals"
 create policy "Users can delete their own savings goals"
   on public.savings_goals for delete
   using (auth.uid() = user_id);
+
+-- Logs each "Add money" contribution toward a savings goal, so its history
+-- can be shown (and a mistaken entry undone) without losing the running
+-- current_amount kept on savings_goals itself.
+create table if not exists public.goal_contributions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  goal_id uuid not null references public.savings_goals(id) on delete cascade,
+  amount numeric(10, 2) not null,
+  contributed_at date not null default current_date,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists goal_contributions_goal_idx on public.goal_contributions (goal_id, contributed_at desc);
+
+alter table public.goal_contributions enable row level security;
+
+create policy "Users can view their own goal contributions"
+  on public.goal_contributions for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert their own goal contributions"
+  on public.goal_contributions for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete their own goal contributions"
+  on public.goal_contributions for delete
+  using (auth.uid() = user_id);
