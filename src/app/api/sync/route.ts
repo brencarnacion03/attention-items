@@ -2,6 +2,10 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { syncUser, syncAllUsers } from "@/lib/sync";
 
+// Classifying a wider calendar window means more Claude calls per sync;
+// give this more room than the platform's default before it's cut off.
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const isCron = Boolean(process.env.CRON_SECRET) && authHeader === `Bearer ${process.env.CRON_SECRET}`;

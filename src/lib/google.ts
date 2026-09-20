@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+import { google, type calendar_v3 } from "googleapis";
 import type { RawCandidate } from "./types";
 
 export const GOOGLE_OAUTH_SCOPES = [
@@ -72,23 +72,31 @@ export async function fetchGmailCandidates(accessToken: string, maxResults = 25)
   return candidates.filter((c): c is RawCandidate => c !== null);
 }
 
-/** Fetches upcoming events on the primary calendar as classification candidates. */
-export async function fetchCalendarCandidates(accessToken: string, maxResults = 25): Promise<RawCandidate[]> {
+/** Fetches upcoming events on the primary calendar as classification candidates.
+ * Pages through results (Google caps each page at 100) so events further down
+ * the list, or later in the window, aren't silently dropped. */
+export async function fetchCalendarCandidates(accessToken: string, maxTotal = 100): Promise<RawCandidate[]> {
   const calendar = google.calendar({ version: "v3", auth: authClientFor(accessToken) });
 
   const now = new Date();
-  const in30Days = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const in90Days = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
 
-  const list = await calendar.events.list({
-    calendarId: "primary",
-    timeMin: now.toISOString(),
-    timeMax: in30Days.toISOString(),
-    singleEvents: true,
-    orderBy: "startTime",
-    maxResults,
-  });
+  const events: calendar_v3.Schema$Event[] = [];
+  let pageToken: string | undefined;
 
-  const events = list.data.items ?? [];
+  do {
+    const list = await calendar.events.list({
+      calendarId: "primary",
+      timeMin: now.toISOString(),
+      timeMax: in90Days.toISOString(),
+      singleEvents: true,
+      orderBy: "startTime",
+      maxResults: Math.min(100, maxTotal - events.length),
+      pageToken,
+    });
+    events.push(...(list.data.items ?? []));
+    pageToken = list.data.nextPageToken ?? undefined;
+  } while (pageToken && events.length < maxTotal);
 
   return events
     .filter((e) => e.id && e.status !== "cancelled")
