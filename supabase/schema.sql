@@ -208,3 +208,28 @@ create policy "Users can insert their own goal contributions"
 create policy "Users can delete their own goal contributions"
   on public.goal_contributions for delete
   using (auth.uid() = user_id);
+
+-- A goal's cover is either a preset caricature icon (cover_icon, a key into
+-- GOAL_ICONS in the app) or a user-uploaded photo (cover_image_url, from the
+-- "goal-covers" storage bucket below). At most one is set at a time.
+alter table public.savings_goals add column if not exists cover_image_url text;
+alter table public.savings_goals add column if not exists cover_icon text;
+
+-- Storage bucket for goal cover photos. Public read (they're just decorative
+-- cover images), writes restricted to the owning user's own folder
+-- (goal-covers/<user_id>/...).
+insert into storage.buckets (id, name, public)
+values ('goal-covers', 'goal-covers', true)
+on conflict (id) do nothing;
+
+create policy "Users can upload their own goal covers"
+  on storage.objects for insert
+  with check (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Users can update their own goal covers"
+  on storage.objects for update
+  using (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);
+
+create policy "Users can delete their own goal covers"
+  on storage.objects for delete
+  using (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);

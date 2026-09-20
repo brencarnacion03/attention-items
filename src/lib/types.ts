@@ -111,5 +111,7 @@ export interface SavingsGoal {
   target_amount: number;
   current_amount: number;
   target_date: string | null;
+  cover_image_url: string | null;
+  cover_icon: string | null;
   created_at: string;
 }

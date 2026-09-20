@@ -79,6 +79,40 @@ export async function addMoneyToGoal(goalId: string, amount: number) {
   revalidatePath("/goals");
 }
 
+export async function setGoalCoverIcon(goalId: string, icon: string) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in.");
+
+  const { error } = await supabase
+    .from("savings_goals")
+    .update({ cover_icon: icon, cover_image_url: null })
+    .eq("id", goalId)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/goals");
+}
+
+export async function setGoalCoverPhoto(goalId: string, url: string) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in.");
+
+  const { error } = await supabase
+    .from("savings_goals")
+    .update({ cover_image_url: url, cover_icon: null })
+    .eq("id", goalId)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/goals");
+}
+
 export async function deleteContribution(contributionId: string) {
   const supabase = createClient();
   const {
