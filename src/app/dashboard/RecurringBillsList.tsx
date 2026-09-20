@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { deleteRecurringBill } from "./actions";
 import type { RecurringBill } from "@/lib/types";
+
+const DELETE_WIDTH = 84;
+const SWIPE_OPEN_THRESHOLD = DELETE_WIDTH * 0.55;
+const EXIT_MS = 180;
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -29,7 +33,17 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
   );
 }
 
-function BillRow({
+function CountBadge({ count }: { count: number }) {
+  return (
+    <span className="flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-full bg-white/15 px-1.5 text-[11px] font-semibold text-white">
+      {count}
+    </span>
+  );
+}
+
+/** A bill row you can swipe left on (mouse or touch) to reveal a Delete action,
+ * matching iOS's swipe-to-delete list interaction. */
+function SwipeToDeleteRow({
   bill,
   isPending,
   onRemove,
@@ -38,21 +52,80 @@ function BillRow({
   isPending: boolean;
   onRemove: () => void;
 }) {
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const pointerId = useRef<number | null>(null);
+  const startX = useRef(0);
+  const startDragX = useRef(0);
+  const moved = useRef(false);
+
+  const clamp = (x: number) => Math.min(0, Math.max(-DELETE_WIDTH - 16, x));
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isPending || removing) return;
+    pointerId.current = e.pointerId;
+    startX.current = e.clientX;
+    startDragX.current = dragX;
+    moved.current = false;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setDragging(true);
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (pointerId.current !== e.pointerId) return;
+    const delta = e.clientX - startX.current;
+    if (Math.abs(delta) > 4) moved.current = true;
+    setDragX(clamp(startDragX.current + delta));
+  };
+
+  const endDrag = () => {
+    if (pointerId.current === null) return;
+    pointerId.current = null;
+    setDragging(false);
+    setDragX((x) => (x < -SWIPE_OPEN_THRESHOLD ? -DELETE_WIDTH : 0));
+  };
+
+  const handleDelete = () => {
+    setRemoving(true);
+    setTimeout(onRemove, EXIT_MS);
+  };
+
   return (
-    <li className="flex items-center justify-between rounded-2xl border border-neutral-200 px-3.5 py-2 text-sm shadow-sm">
-      <span>
-        {bill.title}
-        {bill.amount != null ? ` · $${bill.amount.toFixed(2)}` : ""} · day {bill.day_of_month} of
-        each month
-        {bill.email_reminder ? ` · emails ${bill.reminder_days_before}d before` : ""}
-      </span>
-      <button
-        disabled={isPending}
-        onClick={onRemove}
-        className="rounded-full px-2 py-1 text-xs text-neutral-500 underline transition-transform active:scale-90 disabled:opacity-50"
+    <li
+      className={`relative overflow-hidden rounded-2xl transition-[opacity,transform] duration-150 ${
+        removing ? "scale-95 opacity-0" : "scale-100 opacity-100"
+      }`}
+    >
+      <div className="absolute inset-y-0 right-0 flex items-stretch" style={{ width: DELETE_WIDTH }}>
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={isPending}
+          className="flex flex-1 items-center justify-center rounded-2xl bg-red-600 text-sm font-medium text-white transition-transform active:scale-95 disabled:opacity-50"
+        >
+          Delete
+        </button>
+      </div>
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        style={{ transform: `translateX(${dragX}px)`, touchAction: "pan-y" }}
+        className={`relative select-none rounded-2xl border border-neutral-200 bg-neutral-950 px-3.5 py-2.5 text-sm shadow-sm ${
+          dragging ? "" : "transition-transform duration-200 ease-out"
+        }`}
       >
-        Remove
-      </button>
+        <p className="text-white">
+          {bill.title}
+          {bill.amount != null ? ` · $${bill.amount.toFixed(2)}` : ""}
+        </p>
+        <p className="mt-0.5 text-xs text-neutral-500">
+          day {bill.day_of_month} of each month
+          {bill.email_reminder ? ` · emails ${bill.reminder_days_before}d before` : ""}
+        </p>
+      </div>
     </li>
   );
 }
@@ -72,7 +145,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
           Recurring bills
         </h2>
         <ul className="space-y-1.5">
-          <BillRow bill={bills[0]} isPending={isPending} onRemove={() => remove(bills[0].id)} />
+          <SwipeToDeleteRow bill={bills[0]} isPending={isPending} onRemove={() => remove(bills[0].id)} />
         </ul>
       </div>
     );
@@ -106,12 +179,12 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
             <button
               type="button"
               onClick={() => setExpanded(true)}
-              className="relative flex w-full items-start justify-between gap-3 rounded-2xl border border-neutral-700 bg-neutral-900 px-4 py-3 text-left shadow-sm transition-transform active:scale-[0.98]"
+              className="relative flex w-full items-center gap-3 rounded-2xl border border-neutral-700 bg-neutral-900 px-3.5 py-3 text-left shadow-sm transition-transform duration-150 active:scale-[0.97] active:brightness-95"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-3">
                   <p className="truncate text-sm font-medium text-white">{first.title}</p>
-                  <span className="shrink-0 text-xs text-neutral-500">{bills.length}</span>
+                  <CountBadge count={bills.length} />
                 </div>
                 <p className="mt-0.5 truncate text-xs text-neutral-400">
                   {first.amount != null ? `${formatDollars(first.amount)} · ` : ""}day{" "}
@@ -128,7 +201,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
         </div>
       </div>
 
-      {/* Expanded: the full list, one row per bill. */}
+      {/* Expanded: the full, scrollable list - swipe a row left to delete it. */}
       <div
         className={`grid transition-[grid-template-rows] duration-300 ease-out ${
           expanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -138,14 +211,15 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
           <button
             type="button"
             onClick={() => setExpanded(false)}
-            className="mb-1.5 flex w-full items-center justify-between rounded-xl px-1 py-1 text-xs font-medium text-neutral-500 transition-transform active:scale-[0.98]"
+            className="mb-1.5 flex w-full items-center gap-2 rounded-xl px-1 py-1 text-xs font-medium text-neutral-500 transition-transform active:scale-[0.98]"
           >
-            <span>Recurring bills</span>
             <ChevronIcon expanded={true} />
+            <span>Recurring bills</span>
+            <span className="text-neutral-600">· swipe a bill to delete it</span>
           </button>
-          <ul className="space-y-1.5">
+          <ul className="max-h-72 space-y-1.5 overflow-y-auto overscroll-contain pr-0.5">
             {bills.map((bill) => (
-              <BillRow key={bill.id} bill={bill} isPending={isPending} onRemove={() => remove(bill.id)} />
+              <SwipeToDeleteRow key={bill.id} bill={bill} isPending={isPending} onRemove={() => remove(bill.id)} />
             ))}
           </ul>
         </div>
