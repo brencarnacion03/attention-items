@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "/Users/brenda/Personal project/.tools/node-v22.11.0-darwin-arm64/bin/node",
       "runtimeArgs": [
-        "run",
+        "/Users/brenda/Personal project/node_modules/next/dist/bin/next",
         "dev"
       ],
       "port": 3000
