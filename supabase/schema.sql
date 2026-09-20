@@ -148,3 +148,35 @@ create policy "Users can insert their own recurring income"
 create policy "Users can delete their own recurring income"
   on public.recurring_income for delete
   using (auth.uid() = user_id);
+
+-- User-defined savings goals, tracked toward a target amount (and optional
+-- target date) by logging contributions via the "Add money" action.
+create table if not exists public.savings_goals (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text not null,
+  target_amount numeric(10, 2) not null,
+  current_amount numeric(10, 2) not null default 0,
+  target_date date,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists savings_goals_user_idx on public.savings_goals (user_id);
+
+alter table public.savings_goals enable row level security;
+
+create policy "Users can view their own savings goals"
+  on public.savings_goals for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert their own savings goals"
+  on public.savings_goals for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update their own savings goals"
+  on public.savings_goals for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete their own savings goals"
+  on public.savings_goals for delete
+  using (auth.uid() = user_id);

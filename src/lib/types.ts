@@ -94,3 +94,13 @@ export interface RecurringBill {
   last_reminded_for: string | null;
   created_at: string;
 }
+
+export interface SavingsGoal {
+  id: string;
+  user_id: string;
+  title: string;
+  target_amount: number;
+  current_amount: number;
+  target_date: string | null;
+  created_at: string;
+}

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type TabKey = "dashboard" | "calendar" | "spending";
+type TabKey = "dashboard" | "calendar" | "spending" | "goals";
 
 function HomeIcon({ filled }: { filled: boolean }) {
   return (
@@ -41,10 +41,36 @@ function PieChartIcon({ filled }: { filled: boolean }) {
   );
 }
 
+function TargetIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={filled ? 0 : 2}
+      />
+      <circle
+        cx="12"
+        cy="12"
+        r="5.2"
+        fill={filled ? "black" : "none"}
+        stroke={filled ? "none" : "currentColor"}
+        strokeWidth={filled ? 0 : 2}
+        opacity={filled ? 0.85 : 1}
+      />
+      <circle cx="12" cy="12" r="2" fill="currentColor" />
+    </svg>
+  );
+}
+
 const TABS: { key: TabKey; href: string; label: string; icon: (filled: boolean) => React.ReactNode }[] = [
   { key: "dashboard", href: "/dashboard", label: "Home", icon: (f) => <HomeIcon filled={f} /> },
   { key: "calendar", href: "/calendar", label: "Calendar", icon: (f) => <CalendarIcon filled={f} /> },
   { key: "spending", href: "/spending", label: "Spending", icon: (f) => <PieChartIcon filled={f} /> },
+  { key: "goals", href: "/goals", label: "Goals", icon: (f) => <TargetIcon filled={f} /> },
 ];
 
 export function TabBar({ active }: { active: TabKey }) {
