@@ -15,12 +15,57 @@ const URGENCY_LABEL: Record<Urgency, string> = {
   green: "Later",
   blue: "FYI",
 };
-const URGENCY_DOT: Record<Urgency, string> = {
-  red: "bg-red-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-500",
-  blue: "bg-blue-500",
+// Distinguished by icon shape rather than a rainbow of colors, so the list
+// stays within the app's hunter/sand palette - only genuinely urgent items
+// get the (already-established) red accent.
+const URGENCY_COLOR: Record<Urgency, string> = {
+  red: "text-red-500",
+  yellow: "text-[#d99a3c]",
+  green: "text-hunter-400",
+  blue: "text-sand-500",
 };
+
+function UrgencyIcon({ urgency, className }: { urgency: Urgency; className?: string }) {
+  switch (urgency) {
+    case "red":
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <path
+            d="M12 3.5 22 20H2z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          <path d="M12 9.5v5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          <circle cx="12" cy="17.2" r="1" fill="currentColor" stroke="none" />
+        </svg>
+      );
+    case "yellow":
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="2" />
+          <path d="M12 7.5V12l3.2 2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case "green":
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <rect x="3.5" y="4.5" width="17" height="16" rx="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
+          <path d="M3.5 9.5h17" stroke="currentColor" strokeWidth="2" />
+          <path d="M8 13.5l2.4 2.4L16 10.5" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    default:
+      return (
+        <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="2" />
+          <circle cx="12" cy="8.3" r="1.1" fill="currentColor" stroke="none" />
+          <path d="M12 11.5v5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      );
+  }
+}
 
 export default async function DashboardPage() {
   const supabase = createClient();
@@ -84,7 +129,7 @@ export default async function DashboardPage() {
           return (
             <section key={urgency}>
               <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-sand-500">
-                <span className={`h-2 w-2 rounded-full ${URGENCY_DOT[urgency]}`} />
+                <UrgencyIcon urgency={urgency} className={`h-4 w-4 shrink-0 ${URGENCY_COLOR[urgency]}`} />
                 {URGENCY_LABEL[urgency]} ({group.length})
               </h2>
               <ul className="space-y-2">
