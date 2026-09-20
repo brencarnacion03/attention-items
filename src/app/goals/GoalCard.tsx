@@ -15,7 +15,7 @@ import type { GoalContribution, SavingsGoal } from "@/lib/types";
 const DELETE_WIDTH = 84;
 const SWIPE_OPEN_THRESHOLD = DELETE_WIDTH * 0.55;
 const SHEET_TRANSITION_MS = 220;
-const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 
 function formatDollars(amount: number): string {
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -146,7 +146,7 @@ function CoverPicker({
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            className="hidden"
+            className="absolute h-px w-px overflow-hidden opacity-0"
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) onUploadFile(file);
@@ -242,12 +242,15 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
   };
 
   const handleUploadFile = (file: File) => {
-    if (!file.type.startsWith("image/")) {
+    // iOS Safari often reports an empty MIME type for photos picked from the
+    // camera roll (notably HEIC) - only reject when a type IS reported and
+    // it's clearly not an image, so those still go through.
+    if (file.type && !file.type.startsWith("image/")) {
       setCoverError("Choose an image file.");
       return;
     }
     if (file.size > MAX_PHOTO_BYTES) {
-      setCoverError("Image must be under 5MB.");
+      setCoverError("Image must be under 10MB.");
       return;
     }
     setCoverError(null);
@@ -264,7 +267,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
         const path = `${user.id}/${goal.id}-${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
           .from("goal-covers")
-          .upload(path, file, { upsert: true, contentType: file.type });
+          .upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
         if (uploadError) throw uploadError;
 
         const { data: pub } = supabase.storage.from("goal-covers").getPublicUrl(path);
