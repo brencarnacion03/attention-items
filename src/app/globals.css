@@ -43,3 +43,16 @@ input[type="time"] {
 .animate-goal-glow {
   animation: goal-glow 2.2s ease-in-out infinite;
 }
+
+@keyframes wave-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave-scroll {
+  animation: wave-scroll 2.6s linear infinite;
+}

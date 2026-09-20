@@ -36,6 +36,29 @@ function daysUntil(dateISO: string): number {
   return Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+/** A wave-filled progress indicator with milestone ticks at 25/50/75%, instead of a flat bar. */
+function LiquidProgressBar({ pct, reached }: { pct: number; reached: boolean }) {
+  const fillColor = reached ? "#74ab7e" : "#3c6b43";
+  return (
+    <div className="relative h-4 w-full overflow-hidden rounded-full bg-white">
+      {[25, 50, 75].map((m) => (
+        <div key={m} className="absolute inset-y-0 z-10 w-px bg-black/15" style={{ left: `${m}%` }} />
+      ))}
+      <div
+        className="absolute inset-y-0 left-0 overflow-hidden rounded-full transition-[width] duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+        style={{ width: `${pct}%` }}
+      >
+        <svg viewBox="0 0 200 40" preserveAspectRatio="none" className="absolute inset-0 h-full w-[200%] animate-wave-scroll">
+          <path
+            d="M0 22 C 12.5 12, 37.5 32, 50 22 S 87.5 12, 100 22 S 137.5 32, 150 22 S 187.5 12, 200 22 L200 40 L0 40 Z"
+            fill={fillColor}
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 function ChevronIcon({ expanded }: { expanded: boolean }) {
   return (
     <svg
@@ -111,7 +134,7 @@ function CoverPicker({
                 className="flex h-14 w-14 items-center justify-center rounded-[18px] ring-1 ring-black/10"
                 style={{ background: icon.tile, boxShadow: "0 3px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35)" }}
               >
-                <GoalIconGlyph goalIcon={icon.key} className="h-7 w-7" />
+                <GoalIconGlyph goalIcon={icon.key} size={30} />
               </span>
               <span className="text-center text-[11px] leading-tight text-sand-300">{icon.label}</span>
             </button>
@@ -286,15 +309,15 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
               ) : (
                 <>
                   <div className="absolute inset-0" style={{ background: goalIconTile(goal.cover_icon) }} />
-                  <div className="absolute -right-2 -top-2 opacity-90">
-                    <GoalIconGlyph goalIcon={goal.cover_icon} className="h-24 w-24" />
+                  <div className="absolute inset-x-0 top-3 flex justify-center drop-shadow-sm">
+                    <GoalIconGlyph goalIcon={goal.cover_icon} size={52} />
                   </div>
                 </>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-3 bottom-2">
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-sm font-medium text-sand-50">{goal.title}</p>
+                  <p className="truncate text-lg font-bold text-sand-50">{goal.title}</p>
                   {reached && (
                     <span className="shrink-0 rounded-full bg-hunter-400/20 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
                       🎉 Reached
@@ -310,7 +333,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           ) : (
             <div className="bg-[var(--background)] px-4 pb-2 pt-4">
               <div className="flex items-center gap-2">
-                <p className="truncate text-sm font-medium text-sand-100">{goal.title}</p>
+                <p className="truncate text-lg font-bold text-sand-100">{goal.title}</p>
                 {reached && (
                   <span className="shrink-0 rounded-full bg-hunter-400/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
                     🎉 Reached
@@ -332,14 +355,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           onClick={() => hasHistory && setHistoryOpen((v) => !v)}
           className={`block w-full ${hasHistory ? "cursor-pointer active:scale-[0.99]" : "cursor-default"} transition-transform`}
         >
-          <div className="h-2.5 w-full overflow-hidden rounded-full bg-ink-800">
-            <div
-              className={`h-full rounded-full transition-[width] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
-                reached ? "bg-hunter-400" : "bg-hunter-600"
-              }`}
-              style={{ width: `${pct}%` }}
-            />
-          </div>
+          <LiquidProgressBar pct={pct} reached={reached} />
           <p className="mt-1 text-right text-xs text-sand-500">{Math.round(pct)}%</p>
         </button>
 
