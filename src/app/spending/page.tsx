@@ -171,8 +171,8 @@ export default async function SpendingPage({
             href={spendingHref(g.value, g.value === granularity ? anchor : new Date())}
             className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-transform active:scale-90 ${
               g.value === granularity
-                ? "border-white bg-white text-black"
-                : "border-neutral-700 text-neutral-300 hover:border-neutral-500"
+                ? "border-sand-200 bg-sand-200 text-ink-950"
+                : "border-ink-600 text-sand-300 hover:border-sand-400/50"
             }`}
           >
             {g.label}
@@ -183,14 +183,14 @@ export default async function SpendingPage({
       <div className="mb-6 flex items-center justify-center gap-4">
         <Link
           href={spendingHref(granularity, prevAnchor)}
-          className="shrink-0 rounded-full px-2 py-1 text-sm text-neutral-300 transition-transform active:scale-90"
+          className="shrink-0 rounded-full px-2 py-1 text-sm text-sand-300 transition-transform active:scale-90"
         >
           &larr; Prev
         </Link>
-        <h1 className="text-base font-semibold sm:text-lg">{periodLabel(granularity, start, end)}</h1>
+        <h1 className="text-base font-semibold text-sand-100 sm:text-lg">{periodLabel(granularity, start, end)}</h1>
         <Link
           href={spendingHref(granularity, nextAnchor)}
-          className="shrink-0 rounded-full px-2 py-1 text-sm text-neutral-300 transition-transform active:scale-90"
+          className="shrink-0 rounded-full px-2 py-1 text-sm text-sand-300 transition-transform active:scale-90"
         >
           Next &rarr;
         </Link>

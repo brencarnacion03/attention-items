@@ -155,27 +155,27 @@ export default async function CalendarPage({
         </div>
       </div>
 
-      <p className="mb-3 text-center text-xs text-neutral-500 sm:text-left">
+      <p className="mb-3 text-center text-xs text-sand-400 sm:text-left">
         Click any date to add an item.
       </p>
 
       <CalendarGrid year={year} monthIndex={monthIndex} cells={cells} entriesByDay={entriesByDay} />
 
       {monthTotal > 0 && (
-        <div className="mt-4 flex items-center justify-between rounded-2xl border border-neutral-200 px-4 py-3 shadow-sm">
-          <span className="text-sm font-medium">Total for {monthLabel}</span>
-          <span className="text-sm font-semibold text-red-600">{formatDollars(monthTotal)}</span>
+        <div className="mt-4 flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+          <span className="text-sm font-medium text-sand-100">Total for {monthLabel}</span>
+          <span className="text-sm font-semibold text-red-500">{formatDollars(monthTotal)}</span>
         </div>
       )}
 
       <IncomeSection entries={incomeDisplayEntries} defaultDate={rangeStart} monthLabel={monthLabel} />
 
       {(monthTotal > 0 || totalIncome > 0) && (
-        <div className="mt-3 flex items-center justify-between rounded-2xl border border-neutral-800 px-4 py-3 shadow-sm">
-          <span className="text-sm font-medium">Net for {monthLabel}</span>
+        <div className="mt-3 flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+          <span className="text-sm font-medium text-sand-100">Net for {monthLabel}</span>
           <span
             className={`text-sm font-semibold ${
-              totalIncome - monthTotal >= 0 ? "text-green-500" : "text-red-600"
+              totalIncome - monthTotal >= 0 ? "text-hunter-400" : "text-red-500"
             }`}
           >
             {formatDollars(totalIncome - monthTotal)}

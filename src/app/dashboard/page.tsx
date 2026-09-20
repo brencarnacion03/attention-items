@@ -56,12 +56,12 @@ export default async function DashboardPage() {
           <h1 className="text-xl font-semibold">
             {total} {total === 1 ? "thing needs" : "things need"} your attention
           </h1>
-          <p className="text-sm text-neutral-500">{user.email}</p>
+          <p className="text-sm text-sand-400">{user.email}</p>
         </div>
         <div className="flex items-center gap-3">
           <SyncButton />
           <form action={signOut}>
-            <button className="text-xs text-neutral-500 underline transition-transform active:scale-90">
+            <button className="text-xs text-sand-400 underline transition-transform active:scale-90">
               Sign out
             </button>
           </form>
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
       <RecurringBillsList bills={(recurringBills ?? []) as RecurringBill[]} />
 
       {total === 0 && (
-        <p className="rounded-md border border-dashed border-neutral-300 p-6 text-center text-sm text-neutral-500">
+        <p className="rounded-md border border-dashed border-sand-400/30 p-6 text-center text-sm text-sand-400">
           Nothing pending. Hit &quot;Sync now&quot; to scan your inbox and calendar.
         </p>
       )}
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
           if (group.length === 0) return null;
           return (
             <section key={urgency}>
-              <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-neutral-600">
+              <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-sand-500">
                 <span className={`h-2 w-2 rounded-full ${URGENCY_DOT[urgency]}`} />
                 {URGENCY_LABEL[urgency]} ({group.length})
               </h2>

@@ -28,11 +28,11 @@ export function SyncButton() {
       <button
         onClick={handleClick}
         disabled={syncing}
-        className="rounded-full border border-neutral-300 px-3 py-1.5 text-sm font-medium transition-transform hover:bg-neutral-100 active:scale-90 disabled:opacity-50"
+        className="rounded-full border border-ink-600 px-3 py-1.5 text-sm font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
       >
         {syncing ? "Syncing..." : "Sync now"}
       </button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
 }

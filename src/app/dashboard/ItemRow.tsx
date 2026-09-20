@@ -30,16 +30,16 @@ export function ItemRow({ item }: { item: AttentionItem }) {
 
   return (
     <li
-      className={`flex items-center justify-between gap-4 rounded-2xl border border-neutral-200 px-4 py-3 shadow-sm transition-all duration-200 ${
+      className={`flex items-center justify-between gap-4 rounded-2xl border border-ink-700 px-4 py-3 shadow-sm transition-all duration-200 ${
         isPending ? "scale-[0.98] opacity-40" : "scale-100 opacity-100"
       }`}
     >
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium">
+        <p className="truncate text-sm font-medium text-sand-100">
           {item.title}
           {item.amount != null ? ` · $${item.amount.toFixed(2)}` : ""}
         </p>
-        <div className="text-xs text-neutral-500">
+        <div className="text-xs text-sand-400">
           {TYPE_LABEL[item.type]}
           {item.due_date ? ` · due ${item.due_date}` : ""}
           {item.event_time ? ` at ${formatTime12h(item.event_time)}` : ""}
@@ -57,14 +57,14 @@ export function ItemRow({ item }: { item: AttentionItem }) {
         <button
           onClick={() => act("handled")}
           disabled={isPending}
-          className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs font-medium transition-transform hover:bg-neutral-100 active:scale-90 disabled:opacity-50"
+          className="rounded-full border border-ink-600 px-3 py-1.5 text-xs font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
         >
           Handled
         </button>
         <button
           onClick={() => act("dismissed")}
           disabled={isPending}
-          className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs font-medium transition-transform hover:bg-neutral-100 active:scale-90 disabled:opacity-50"
+          className="rounded-full border border-ink-600 px-3 py-1.5 text-xs font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
         >
           Dismiss
         </button>

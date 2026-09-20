@@ -16,7 +16,7 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className={`h-4 w-4 shrink-0 text-neutral-500 transition-transform duration-200 ${
+      className={`h-4 w-4 shrink-0 text-sand-500 transition-transform duration-200 ${
         expanded ? "rotate-180" : ""
       }`}
       aria-hidden="true"
@@ -35,7 +35,7 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
 
 function CountBadge({ count }: { count: number }) {
   return (
-    <span className="flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-full bg-white/15 px-1.5 text-[11px] font-semibold text-white">
+    <span className="flex h-5 min-w-[20px] shrink-0 items-center justify-center rounded-full bg-sand-100/15 px-1.5 text-[11px] font-semibold text-sand-100">
       {count}
     </span>
   );
@@ -113,15 +113,15 @@ function SwipeToDeleteRow({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         style={{ transform: `translateX(${dragX}px)`, touchAction: "pan-y" }}
-        className={`relative select-none rounded-2xl border border-neutral-200 bg-neutral-950 px-3.5 py-2.5 text-sm shadow-sm ${
+        className={`relative select-none rounded-2xl border border-ink-700 bg-ink-950 px-3.5 py-2.5 text-sm shadow-sm ${
           dragging ? "" : "transition-transform duration-200 ease-out"
         }`}
       >
-        <p className="text-white">
+        <p className="text-sand-100">
           {bill.title}
           {bill.amount != null ? ` · $${bill.amount.toFixed(2)}` : ""}
         </p>
-        <p className="mt-0.5 text-xs text-neutral-500">
+        <p className="mt-0.5 text-xs text-sand-500">
           day {bill.day_of_month} of each month
           {bill.email_reminder ? ` · emails ${bill.reminder_days_before}d before` : ""}
         </p>
@@ -141,7 +141,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
   if (bills.length === 1) {
     return (
       <div className="mb-6">
-        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-600">
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-sand-500">
           Recurring bills
         </h2>
         <ul className="space-y-1.5">
@@ -156,7 +156,7 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
 
   return (
     <div className="mb-6">
-      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-neutral-600">
+      <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-sand-500">
         Recurring bills
       </h2>
 
@@ -170,27 +170,27 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
           <div className="relative pb-2">
             <div
               aria-hidden="true"
-              className="absolute inset-x-3 top-2 h-full rounded-2xl border border-neutral-800 bg-neutral-900/50"
+              className="absolute inset-x-3 top-2 h-full rounded-2xl border border-ink-700 bg-ink-900/50"
             />
             <div
               aria-hidden="true"
-              className="absolute inset-x-1.5 top-1 h-full rounded-2xl border border-neutral-800 bg-neutral-900/70"
+              className="absolute inset-x-1.5 top-1 h-full rounded-2xl border border-ink-700 bg-ink-900/70"
             />
             <button
               type="button"
               onClick={() => setExpanded(true)}
-              className="relative flex w-full items-center gap-3 rounded-2xl border border-neutral-700 bg-neutral-900 px-3.5 py-3 text-left shadow-sm transition-transform duration-150 active:scale-[0.97] active:brightness-95"
+              className="relative flex w-full items-center gap-3 rounded-2xl border border-ink-600 bg-ink-900 px-3.5 py-3 text-left shadow-sm transition-transform duration-150 active:scale-[0.97] active:brightness-95"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="truncate text-sm font-medium text-white">{first.title}</p>
+                  <p className="truncate text-sm font-medium text-sand-100">{first.title}</p>
                   <CountBadge count={bills.length} />
                 </div>
-                <p className="mt-0.5 truncate text-xs text-neutral-400">
+                <p className="mt-0.5 truncate text-xs text-sand-400">
                   {first.amount != null ? `${formatDollars(first.amount)} · ` : ""}day{" "}
                   {first.day_of_month} of each month
                 </p>
-                <p className="mt-1.5 text-xs text-neutral-500">
+                <p className="mt-1.5 text-xs text-sand-500">
                   {rest.length} more bill{rest.length === 1 ? "" : "s"} ·{" "}
                   {formatDollars(totalAmount)} total
                 </p>
@@ -211,11 +211,11 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
           <button
             type="button"
             onClick={() => setExpanded(false)}
-            className="mb-1.5 flex w-full items-center gap-2 rounded-xl px-1 py-1 text-xs font-medium text-neutral-500 transition-transform active:scale-[0.98]"
+            className="mb-1.5 flex w-full items-center gap-2 rounded-xl px-1 py-1 text-xs font-medium text-sand-500 transition-transform active:scale-[0.98]"
           >
             <ChevronIcon expanded={true} />
             <span>Recurring bills</span>
-            <span className="text-neutral-600">· swipe a bill to delete it</span>
+            <span className="text-sand-500/70">· swipe a bill to delete it</span>
           </button>
           <ul className="max-h-72 space-y-1.5 overflow-y-auto overscroll-contain pr-0.5">
             {bills.map((bill) => (

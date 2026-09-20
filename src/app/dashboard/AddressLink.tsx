@@ -103,7 +103,7 @@ export function AddressLink({ address }: { address: string }) {
       <button
         type="button"
         onClick={show}
-        className="text-blue-600 underline decoration-blue-600/40 active:text-blue-700"
+        className="text-hunter-400 underline decoration-hunter-400/40 active:text-hunter-500"
       >
         {address}
       </button>
@@ -117,17 +117,17 @@ export function AddressLink({ address }: { address: string }) {
             }`}
           />
           <div
-            className={`absolute inset-x-0 bottom-0 mx-auto max-w-md rounded-t-2xl border-t border-neutral-800 bg-neutral-950 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
+            className={`absolute inset-x-0 bottom-0 mx-auto max-w-md rounded-t-2xl border-t border-ink-700 bg-ink-950 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
               visible ? "translate-y-0" : "translate-y-full"
             }`}
           >
-            <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-neutral-700" />
+            <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-ink-600" />
 
             <div className="px-4 pb-2 pt-4 text-center">
-              <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">
+              <p className="text-xs font-semibold uppercase tracking-wide text-sand-500">
                 Get directions to
               </p>
-              <p className="truncate text-sm text-neutral-300">{address}</p>
+              <p className="truncate text-sm text-sand-200">{address}</p>
             </div>
 
             <div className="flex justify-center gap-6 px-6 pb-2 pt-3">
@@ -149,7 +149,7 @@ export function AddressLink({ address }: { address: string }) {
                   >
                     <ProviderGlyph provider={provider} />
                   </span>
-                  <span className="text-center text-xs font-medium leading-tight text-neutral-300">
+                  <span className="text-center text-xs font-medium leading-tight text-sand-200">
                     {mapProviderLabel(provider)}
                   </span>
                 </a>
@@ -159,7 +159,7 @@ export function AddressLink({ address }: { address: string }) {
             <button
               type="button"
               onClick={hide}
-              className="mx-4 mb-1 mt-3 w-[calc(100%-2rem)] rounded-xl border border-neutral-700 py-3 text-base font-medium text-white transition-transform active:scale-[0.98] active:bg-white/10"
+              className="mx-4 mb-1 mt-3 w-[calc(100%-2rem)] rounded-xl border border-ink-600 py-3 text-base font-medium text-sand-100 transition-transform active:scale-[0.98] active:bg-ink-800"
             >
               Cancel
             </button>

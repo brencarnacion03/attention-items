@@ -49,7 +49,7 @@ const TABS: { key: TabKey; href: string; label: string; icon: (filled: boolean) 
 
 export function TabBar({ active }: { active: TabKey }) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/75 backdrop-blur-lg">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-ink-700 bg-ink-950/85 backdrop-blur-lg">
       <div className="mx-auto flex max-w-3xl items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
         {TABS.map((tab) => {
           const isActive = tab.key === active;
@@ -58,7 +58,7 @@ export function TabBar({ active }: { active: TabKey }) {
               key={tab.key}
               href={tab.href}
               className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-transform active:scale-90 ${
-                isActive ? "text-white" : "text-neutral-500"
+                isActive ? "text-hunter-400" : "text-sand-500"
               }`}
             >
               {tab.icon(isActive)}

@@ -24,14 +24,14 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8">
       <div className="text-center">
-        <h1 className="text-2xl font-semibold">Attention Items</h1>
-        <p className="mt-2 text-sm text-neutral-500">
+        <h1 className="text-2xl font-semibold text-sand-50">Attention Items</h1>
+        <p className="mt-2 text-sm text-sand-400">
           Sign in with Google to scan your inbox and calendar for things that need your attention.
         </p>
       </div>
       <button
         onClick={handleSignIn}
-        className="rounded-full bg-black px-5 py-2.5 text-sm font-medium text-white transition-transform hover:bg-neutral-800 active:scale-90"
+        className="rounded-full bg-hunter-600 px-5 py-2.5 text-sm font-medium text-sand-50 transition-transform hover:bg-hunter-500 active:scale-90"
       >
         Sign in with Google
       </button>
