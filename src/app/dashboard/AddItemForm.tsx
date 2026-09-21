@@ -43,7 +43,7 @@ export function AddItemForm() {
     <form
       ref={formRef}
       action={handleSubmit}
-      className="mb-6 space-y-3 rounded-2xl border border-ink-700 p-4 shadow-sm"
+      className="card-surface mb-6 space-y-3 p-4"
     >
       <div className="flex items-center gap-3">
         <span className="text-sm font-medium text-sand-100">Add an item</span>

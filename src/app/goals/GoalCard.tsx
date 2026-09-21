@@ -282,8 +282,8 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
 
   return (
     <li
-      className={`overflow-hidden rounded-2xl border shadow-sm transition-colors ${
-        reached ? "animate-goal-glow border-hunter-400/70" : "border-ink-700"
+      className={`card-surface overflow-hidden transition-colors ${
+        reached ? "animate-goal-glow border-hunter-400/70" : ""
       }`}
     >
       <div className="relative">
@@ -320,7 +320,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-3 bottom-2">
                 <div className="flex items-center gap-2">
-                  <p className="truncate text-lg font-bold text-sand-50">{goal.title}</p>
+                  <p className="font-display truncate text-xl font-semibold italic text-sand-50">{goal.title}</p>
                   {reached && (
                     <span className="shrink-0 rounded-full bg-hunter-400/20 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
                       🎉 Reached
@@ -336,7 +336,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           ) : (
             <div className="bg-[var(--background)] px-4 pb-2 pt-4">
               <div className="flex items-center gap-2">
-                <p className="truncate text-lg font-bold text-sand-100">{goal.title}</p>
+                <p className="font-display truncate text-xl font-semibold italic text-sand-100">{goal.title}</p>
                 {reached && (
                   <span className="shrink-0 rounded-full bg-hunter-400/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
                     🎉 Reached

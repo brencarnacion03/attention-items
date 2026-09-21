@@ -132,7 +132,7 @@ export function SpendingChart({
             <span className="text-xs text-sand-400">
               {focusedCategory ? focusedCategory.label : "Total"}
             </span>
-            <span className="text-2xl font-semibold text-sand-50">
+            <span className="font-display text-2xl font-semibold text-sand-50">
               {formatDollars(focusedCategory ? focusedCategory.total : totalAmount)}
             </span>
             {focusedCategory && (
@@ -151,10 +151,8 @@ export function SpendingChart({
               onClick={() => toggle(slice.type)}
               onMouseEnter={() => setHovered(slice.type)}
               onMouseLeave={() => setHovered(null)}
-              className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left transition-transform active:scale-[0.97] ${
-                selected === slice.type
-                  ? "border-sand-200 bg-sand-100/10"
-                  : "border-ink-700 hover:border-ink-600"
+              className={`card-surface flex w-full items-center gap-2.5 px-3 py-2.5 text-left transition-transform active:scale-[0.97] ${
+                selected === slice.type ? "border-sand-200 bg-sand-100/10" : "hover:border-ink-600"
               }`}
             >
               <span
@@ -173,7 +171,7 @@ export function SpendingChart({
       </div>
 
       {selectedCategory && (
-        <div className="mt-6 rounded-2xl border border-ink-700 p-4 shadow-sm">
+        <div className="card-surface mt-6 p-4">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-sand-50">{selectedCategory.label} items</h2>
             <button

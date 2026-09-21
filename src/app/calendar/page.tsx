@@ -145,7 +145,7 @@ export default async function CalendarPage({
           >
             &larr; Prev
           </Link>
-          <h1 className="text-base font-semibold sm:text-lg">{monthLabel}</h1>
+          <h1 className="font-display text-lg font-semibold sm:text-xl">{monthLabel}</h1>
           <Link
             href={`/calendar?month=${monthParam(nextMonth.getFullYear(), nextMonth.getMonth())}`}
             className="shrink-0 rounded-full px-2 py-1 text-xs transition-transform active:scale-90 sm:text-sm"
@@ -162,7 +162,7 @@ export default async function CalendarPage({
       <CalendarGrid year={year} monthIndex={monthIndex} cells={cells} entriesByDay={entriesByDay} />
 
       {monthTotal > 0 && (
-        <div className="mt-4 flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+        <div className="card-surface mt-4 flex items-center justify-between px-4 py-3">
           <span className="text-sm font-medium text-sand-100">Total for {monthLabel}</span>
           <span className="text-sm font-semibold text-red-500">{formatDollars(monthTotal)}</span>
         </div>
@@ -171,7 +171,7 @@ export default async function CalendarPage({
       <IncomeSection entries={incomeDisplayEntries} defaultDate={rangeStart} monthLabel={monthLabel} />
 
       {(monthTotal > 0 || totalIncome > 0) && (
-        <div className="mt-3 flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+        <div className="card-surface mt-3 flex items-center justify-between px-4 py-3">
           <span className="text-sm font-medium text-sand-100">Net for {monthLabel}</span>
           <span
             className={`text-sm font-semibold ${

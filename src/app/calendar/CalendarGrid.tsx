@@ -11,11 +11,14 @@ export interface CalendarEntry {
   amount: number | null;
 }
 
+// Matches the dashboard's muted urgency language (see URGENCY_COLOR in
+// dashboard/page.tsx) instead of stock rainbow red/yellow/green/blue, so the
+// two tabs read as the same app.
 const URGENCY_DOT: Record<Urgency, string> = {
   red: "bg-red-500",
-  yellow: "bg-yellow-500",
-  green: "bg-green-500",
-  blue: "bg-blue-500",
+  yellow: "bg-[#d99a3c]",
+  green: "bg-hunter-400",
+  blue: "bg-sand-500",
 };
 
 const TRANSITION_MS = 220;

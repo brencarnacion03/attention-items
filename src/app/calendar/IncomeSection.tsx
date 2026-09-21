@@ -56,7 +56,7 @@ export function IncomeSection({
   };
 
   return (
-    <div className="mt-3 rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+    <div className="card-surface mt-3 px-4 py-3">
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-sand-100">Income for {monthLabel}</span>
         <div className="flex items-center gap-3">

@@ -103,15 +103,16 @@ const CATEGORY_LABEL: Record<ItemType, string> = {
   reservation: "Reservation",
   document: "Document",
 };
-// Categorical palette (dark-mode steps), fixed order, validated for CVD/contrast
-// against this app's dark surface - see dataviz skill's palette.md.
+// An earthy, muted palette pulled from the app's own hunter/sand/ink theme
+// instead of stock chart-library primaries, so the donut reads as part of
+// this app rather than a generic dashboard widget.
 const CATEGORY_COLOR: Record<ItemType, string> = {
-  bill: "#3987e5",
-  renewal: "#d95926",
-  appointment: "#199e70",
-  deadline: "#c98500",
-  reservation: "#d55181",
-  document: "#008300",
+  bill: "#6a9971",
+  renewal: "#c1893f",
+  appointment: "#8a95c2",
+  deadline: "#b5654a",
+  reservation: "#c2a15a",
+  document: "#7d9a99",
 };
 
 export default async function SpendingPage({
@@ -209,7 +210,9 @@ export default async function SpendingPage({
         >
           &larr; Prev
         </Link>
-        <h1 className="text-base font-semibold text-sand-100 sm:text-lg">{periodLabel(granularity, start, end)}</h1>
+        <h1 className="font-display text-lg font-semibold text-sand-100 sm:text-xl">
+          {periodLabel(granularity, start, end)}
+        </h1>
         <Link
           href={spendingHref(granularity, nextAnchor)}
           className="shrink-0 rounded-full px-2 py-1 text-sm text-sand-300 transition-transform active:scale-90"
@@ -222,13 +225,13 @@ export default async function SpendingPage({
 
       {(totalIncome > 0 || totalAmount > 0) && (
         <div className="mt-6 space-y-2">
-          <div className="flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+          <div className="card-surface flex items-center justify-between px-4 py-3">
             <span className="text-sm font-medium text-sand-100">
               Income for {periodLabel(granularity, start, end)}
             </span>
             <span className="text-sm font-semibold text-hunter-400">{formatDollars(totalIncome)}</span>
           </div>
-          <div className="flex items-center justify-between rounded-2xl border border-ink-700 px-4 py-3 shadow-sm">
+          <div className="card-surface flex items-center justify-between px-4 py-3">
             <span className="text-sm font-medium text-sand-100">
               Net for {periodLabel(granularity, start, end)}
             </span>

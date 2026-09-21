@@ -30,7 +30,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
 
   return (
     <li
-      className={`flex items-center justify-between gap-4 rounded-2xl border border-ink-700 px-4 py-3 shadow-sm transition-all duration-200 ${
+      className={`card-surface flex items-center justify-between gap-4 px-4 py-3 transition-all duration-200 ${
         isPending ? "scale-[0.98] opacity-40" : "scale-100 opacity-100"
       }`}
     >

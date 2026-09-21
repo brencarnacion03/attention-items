@@ -113,7 +113,7 @@ function SwipeToDeleteRow({
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
         style={{ transform: `translateX(${dragX}px)`, touchAction: "pan-y" }}
-        className={`relative select-none rounded-2xl border border-ink-700 bg-ink-950 px-3.5 py-2.5 text-sm shadow-sm ${
+        className={`card-surface relative select-none px-3.5 py-2.5 text-sm ${
           dragging ? "" : "transition-transform duration-200 ease-out"
         }`}
       >
@@ -170,16 +170,16 @@ export function RecurringBillsList({ bills }: { bills: RecurringBill[] }) {
           <div className="relative pb-2">
             <div
               aria-hidden="true"
-              className="absolute inset-x-3 top-2 h-full rounded-2xl border border-ink-700 bg-ink-900/50"
+              className="card-surface absolute inset-x-3 top-2 h-full"
             />
             <div
               aria-hidden="true"
-              className="absolute inset-x-1.5 top-1 h-full rounded-2xl border border-ink-700 bg-ink-900/70"
+              className="card-surface absolute inset-x-1.5 top-1 h-full"
             />
             <button
               type="button"
               onClick={() => setExpanded(true)}
-              className="relative flex w-full items-center gap-3 rounded-2xl border border-ink-600 bg-ink-900 px-3.5 py-3 text-left shadow-sm transition-transform duration-150 active:scale-[0.97] active:brightness-95"
+              className="card-surface relative flex w-full items-center gap-3 px-3.5 py-3 text-left transition-transform duration-150 active:scale-[0.97] active:brightness-95"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-3">

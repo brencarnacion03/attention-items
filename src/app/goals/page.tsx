@@ -33,7 +33,7 @@ export default async function GoalsPage() {
 
   return (
     <main className="mx-auto max-w-2xl p-8 pb-28">
-      <h1 className="mb-6 text-xl font-semibold text-sand-50">Savings goals</h1>
+      <h1 className="font-display mb-6 text-2xl font-semibold text-sand-50">Savings goals</h1>
 
       <AddGoalForm />
 

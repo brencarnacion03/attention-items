@@ -24,7 +24,7 @@ export function AddGoalForm() {
     <form
       ref={formRef}
       action={handleSubmit}
-      className="mb-6 space-y-3 rounded-2xl border border-ink-700 p-4 shadow-sm"
+      className="card-surface mb-6 space-y-3 p-4"
     >
       <span className="text-sm font-medium text-sand-100">Add a savings goal</span>
       <div className="flex flex-wrap gap-2">
