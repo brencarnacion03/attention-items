@@ -52,6 +52,40 @@ export async function setItemStatus(id: string, status: ItemStatus) {
   revalidatePath("/calendar");
 }
 
+export async function editItem(id: string, formData: FormData) {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Not signed in.");
+
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) throw new Error("Title is required.");
+  const type = parseItemType(formData.get("type"));
+  const dueDate = (formData.get("due_date") as string) || null;
+  const amount = parseAmount(formData.get("amount"));
+  const eventTime = parseOptionalText(formData.get("event_time"));
+  const address = parseOptionalText(formData.get("address"));
+
+  const { error } = await supabase
+    .from("attention_items")
+    .update({
+      title,
+      type,
+      due_date: dueDate,
+      amount,
+      event_time: eventTime,
+      address,
+      urgency: urgencyForDueDate(dueDate),
+    })
+    .eq("id", id)
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/dashboard");
+  revalidatePath("/calendar");
+}
+
 export async function addOneTimeItem(formData: FormData) {
   const supabase = createClient();
   const {
