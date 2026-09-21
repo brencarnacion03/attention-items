@@ -222,6 +222,14 @@ insert into storage.buckets (id, name, public)
 values ('goal-covers', 'goal-covers', true)
 on conflict (id) do nothing;
 
+-- Storage's upload() does an INSERT ... RETURNING internally to hand back
+-- object metadata, so a SELECT policy is required too - without it the
+-- RETURNING fails RLS and the whole upload errors as "new row violates
+-- row-level security policy" even though the INSERT itself was allowed.
+create policy "Users can view their own goal covers"
+  on storage.objects for select
+  using (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);
+
 create policy "Users can upload their own goal covers"
   on storage.objects for insert
   with check (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);
