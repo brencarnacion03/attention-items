@@ -1,4 +1,4 @@
-import { google, type calendar_v3 } from "googleapis";
+import { google, type calendar_v3, type gmail_v1 } from "googleapis";
 import type { RawCandidate } from "./types";
 
 export const GOOGLE_OAUTH_SCOPES = [
@@ -70,6 +70,44 @@ export async function fetchGmailCandidates(accessToken: string, maxResults = 25)
   );
 
   return candidates.filter((c): c is RawCandidate => c !== null);
+}
+
+function decodeBase64Url(data: string): string {
+  return Buffer.from(data.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf-8");
+}
+
+/** Walks a (possibly multipart) Gmail message body looking for a part of the given mime type. */
+function findPart(part: gmail_v1.Schema$MessagePart | undefined, mimeType: string): string | null {
+  if (!part) return null;
+  if (part.mimeType === mimeType && part.body?.data) return decodeBase64Url(part.body.data);
+  for (const child of part.parts ?? []) {
+    const found = findPart(child, mimeType);
+    if (found) return found;
+  }
+  return null;
+}
+
+export interface GmailMessageDetail {
+  subject: string;
+  from: string;
+  body: string;
+}
+
+/** Fetches one message's full body (for drafting a reply) - the classification
+ * pass only ever reads the snippet, so this is a separate, on-demand fetch. */
+export async function fetchGmailMessageDetail(accessToken: string, messageId: string): Promise<GmailMessageDetail> {
+  const gmail = google.gmail({ version: "v1", auth: authClientFor(accessToken) });
+  const msg = await gmail.users.messages.get({ userId: "me", id: messageId, format: "full" });
+
+  const headers = msg.data.payload?.headers ?? [];
+  const subject = headerValue(headers, "Subject") || "(no subject)";
+  const from = headerValue(headers, "From");
+
+  const plainText = findPart(msg.data.payload, "text/plain");
+  const html = plainText ? null : findPart(msg.data.payload, "text/html");
+  const body = plainText ?? (html ? html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : msg.data.snippet ?? "");
+
+  return { subject, from, body: body.slice(0, 6000) };
 }
 
 /** Fetches upcoming events on the primary calendar as classification candidates.

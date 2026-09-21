@@ -98,3 +98,39 @@ export async function classifyCandidate(candidate: RawCandidate): Promise<Classi
     auto_handleable: input.auto_handleable ?? false,
   };
 }
+
+const REPLY_SYSTEM_PROMPT = `You draft short, polite email replies for a user managing their personal life admin (bills, appointments, renewals, reservations). Write in first person as the user. Be brief and direct - a few sentences at most. Don't invent facts (dates, confirmation numbers, names) that aren't given to you; if something is needed but unknown, leave a clear placeholder in brackets like [confirm date]. Output only the reply body text: no subject line, no "Dear ___" salutation beyond a simple greeting, no sign-off placeholder like [Your Name].`;
+
+/** Drafts a reply body for one attention item's original email. Never sent by
+ * this app directly - the caller opens it in the user's own mail client for
+ * final review and send. */
+export async function draftReply(params: {
+  itemTitle: string;
+  itemType: string;
+  dueDate: string | null;
+  originalSubject: string;
+  originalFrom: string;
+  originalBody: string;
+}): Promise<string> {
+  const message = await client.messages.create({
+    model: "claude-sonnet-5",
+    max_tokens: 400,
+    system: REPLY_SYSTEM_PROMPT,
+    messages: [
+      {
+        role: "user",
+        content: [
+          `Attention item: ${params.itemTitle} (${params.itemType}${params.dueDate ? `, due ${params.dueDate}` : ""})`,
+          `Original email from: ${params.originalFrom}`,
+          `Original subject: ${params.originalSubject}`,
+          `Original message:\n${params.originalBody.slice(0, 4000)}`,
+          "",
+          "Draft a short reply confirming or acknowledging this, as appropriate.",
+        ].join("\n"),
+      },
+    ],
+  });
+
+  const textBlock = message.content.find((b): b is Anthropic.TextBlock => b.type === "text");
+  return textBlock?.text?.trim() ?? "";
+}

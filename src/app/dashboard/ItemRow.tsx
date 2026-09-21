@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { editItem, setItemStatus } from "./actions";
+import { draftReplyForItem, editItem, setItemStatus, type ReplyDraft } from "./actions";
 import { AddressLink } from "./AddressLink";
 import type { AttentionItem, ItemType } from "@/lib/types";
 
@@ -47,12 +47,20 @@ function PencilIcon() {
   );
 }
 
+const canDraftReply = (item: AttentionItem) => item.source === "gmail" && item.auto_handleable && item.status === "new";
+
 export function ItemRow({ item }: { item: AttentionItem }) {
   const [isPending, startTransition] = useTransition();
   const [editing, setEditing] = useState(false);
   const [type, setType] = useState<ItemType>(item.type);
   const [error, setError] = useState<string | null>(null);
   const showTimeAndAddress = NEEDS_TIME_AND_ADDRESS.includes(type);
+
+  const [draftOpen, setDraftOpen] = useState(false);
+  const [isDrafting, startDraftTransition] = useTransition();
+  const [draft, setDraft] = useState<ReplyDraft | null>(null);
+  const [draftBody, setDraftBody] = useState("");
+  const [draftError, setDraftError] = useState<string | null>(null);
 
   const act = (status: "handled" | "dismissed") => {
     startTransition(() => setItemStatus(item.id, status));
@@ -75,6 +83,27 @@ export function ItemRow({ item }: { item: AttentionItem }) {
       }
     });
   };
+
+  const openDraft = () => {
+    setDraftOpen(true);
+    if (draft || isDrafting) return;
+    setDraftError(null);
+    startDraftTransition(async () => {
+      try {
+        const result = await draftReplyForItem(item.id);
+        setDraft(result);
+        setDraftBody(result.body);
+      } catch (err) {
+        setDraftError(err instanceof Error ? err.message : "Could not draft a reply.");
+      }
+    });
+  };
+
+  const gmailComposeUrl = draft
+    ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(draft.to)}&su=${encodeURIComponent(
+        draft.subject
+      )}&body=${encodeURIComponent(draftBody)}`
+    : "#";
 
   return (
     <li
@@ -100,6 +129,18 @@ export function ItemRow({ item }: { item: AttentionItem }) {
             )}
             {" · "}
             {item.source}
+            {canDraftReply(item) && (
+              <>
+                {" · "}
+                <button
+                  type="button"
+                  onClick={() => (draftOpen ? setDraftOpen(false) : openDraft())}
+                  className="underline transition-colors hover:text-sand-300"
+                >
+                  {draftOpen ? "Hide reply" : "Draft reply"}
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -219,6 +260,51 @@ export function ItemRow({ item }: { item: AttentionItem }) {
           </form>
         </div>
       </div>
+
+      {canDraftReply(item) && (
+        <div
+          className={`grid transition-[grid-template-rows] duration-300 ease-out ${
+            draftOpen ? "mt-3 grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="space-y-2 border-t border-ink-800 pt-3">
+              {isDrafting && <p className="text-xs text-sand-400">Drafting a reply…</p>}
+              {draftError && <p className="text-xs text-red-500">{draftError}</p>}
+              {draft && (
+                <>
+                  <p className="text-xs text-sand-500">
+                    To {draft.to} · {draft.subject}
+                  </p>
+                  <textarea
+                    value={draftBody}
+                    onChange={(e) => setDraftBody(e.target.value)}
+                    rows={4}
+                    className="w-full rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-sm text-ink-950"
+                  />
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={gmailComposeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-xl bg-hunter-600 px-3 py-1.5 text-xs font-medium text-sand-50 transition-transform active:scale-90"
+                    >
+                      Open in Gmail
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setDraftOpen(false)}
+                      className="rounded-xl px-3 py-1.5 text-xs font-medium text-sand-400 transition-transform active:scale-90"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </li>
   );
 }
