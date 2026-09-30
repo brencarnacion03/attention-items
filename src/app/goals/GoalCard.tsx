@@ -359,14 +359,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           className={`block w-full ${hasHistory ? "cursor-pointer active:scale-[0.99]" : "cursor-default"} transition-transform`}
         >
           <LiquidProgressBar pct={pct} reached={reached} />
-          <p className="mt-1 text-right text-xs text-ink-500">{Math.round(pct)}%</p>
+          <p className="mt-1 text-right text-xs font-bold text-ink-950">{Math.round(pct)}%</p>
         </button>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setAdding((v) => !v)}
-            className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-medium text-ink-700 transition-transform active:scale-90"
+            className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90"
           >
             {adding ? "Cancel" : "+ Add money"}
           </button>
@@ -375,7 +375,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             type="button"
             onClick={() => setPickerOpen(true)}
             disabled={uploadingCover}
-            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-500 transition-transform active:scale-90 disabled:opacity-50"
+            className="rounded-full px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90 disabled:opacity-50"
           >
             {uploadingCover ? "Uploading..." : hasCover ? "Change cover" : "+ Cover"}
           </button>
@@ -384,7 +384,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             <button
               type="button"
               onClick={() => setHistoryOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-ink-500 transition-transform active:scale-90"
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90"
             >
               History ({contributions.length})
               <ChevronIcon expanded={historyOpen} />

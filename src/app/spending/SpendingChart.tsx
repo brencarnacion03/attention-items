@@ -137,7 +137,7 @@ export function SpendingChart({
               {formatDollars(focusedCategory ? focusedCategory.total : totalAmount)}
             </span>
             {focusedCategory && (
-              <span className="text-xs text-ink-500">
+              <span className="text-xs text-ink-950">
                 {Math.round((focusedCategory.total / totalAmount) * 100)}% of total
               </span>
             )}
