@@ -16,13 +16,13 @@ const URGENCY_LABEL: Record<Urgency, string> = {
   blue: "FYI",
 };
 // Distinguished by icon shape rather than a rainbow of colors, so the list
-// stays within the app's hunter/sand palette - only genuinely urgent items
-// get the (already-established) red accent.
+// stays legible - only genuinely urgent items get the boldest color, with
+// vivid amber/green accents for the rest and a muted tone for pure FYI.
 const URGENCY_COLOR: Record<Urgency, string> = {
   red: "text-red-500",
-  yellow: "text-[#d99a3c]",
-  green: "text-hunter-400",
-  blue: "text-sand-500",
+  yellow: "text-amber-500",
+  green: "text-hunter-600",
+  blue: "text-ink-400",
 };
 
 function UrgencyIcon({ urgency, className }: { urgency: Urgency; className?: string }) {
@@ -98,15 +98,15 @@ export default async function DashboardPage() {
     <main className="mx-auto max-w-2xl p-8 pb-28">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="font-display text-2xl font-semibold italic tracking-tight text-sand-50">
+          <h1 className="font-display text-2xl font-semibold italic tracking-tight text-ink-950">
             {total} {total === 1 ? "thing needs" : "things need"} your attention
           </h1>
-          <p className="text-sm text-sand-400">{user.email}</p>
+          <p className="text-sm text-ink-500">{user.email}</p>
         </div>
         <div className="flex items-center gap-3">
           <SyncButton />
           <form action={signOut}>
-            <button className="text-xs text-sand-400 underline transition-transform active:scale-90">
+            <button className="text-xs text-ink-500 underline transition-transform active:scale-90">
               Sign out
             </button>
           </form>
@@ -117,7 +117,7 @@ export default async function DashboardPage() {
       <RecurringBillsList bills={(recurringBills ?? []) as RecurringBill[]} />
 
       {total === 0 && (
-        <p className="rounded-md border border-dashed border-sand-400/30 p-6 text-center text-sm text-sand-400">
+        <p className="rounded-md border border-dashed border-ink-950/15 p-6 text-center text-sm text-ink-500">
           Nothing pending. Hit &quot;Sync now&quot; to scan your inbox and calendar.
         </p>
       )}
@@ -128,7 +128,7 @@ export default async function DashboardPage() {
           if (group.length === 0) return null;
           return (
             <section key={urgency}>
-              <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-sand-500">
+              <h2 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-ink-500">
                 <UrgencyIcon urgency={urgency} className={`h-4 w-4 shrink-0 ${URGENCY_COLOR[urgency]}`} />
                 {URGENCY_LABEL[urgency]} ({group.length})
               </h2>

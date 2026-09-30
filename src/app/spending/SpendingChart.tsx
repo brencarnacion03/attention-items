@@ -83,7 +83,7 @@ export function SpendingChart({
 
   if (totalAmount === 0) {
     return (
-      <p className="rounded-md border border-dashed border-ink-600 p-8 text-center text-sm text-sand-400">
+      <p className="rounded-md border border-dashed border-ink-950/15 p-8 text-center text-sm text-ink-500">
         No spending recorded for {periodLabel}. Amounts you add to bills, renewals, and other items will
         show up here.
       </p>
@@ -102,7 +102,7 @@ export function SpendingChart({
                   key={slice.type}
                   d={donutArcPath(CX, CY, OUTER_R, INNER_R, slice.startAngle, slice.endAngle)}
                   fill={slice.color}
-                  stroke="#000"
+                  stroke="#fff"
                   strokeWidth={2}
                   tabIndex={0}
                   role="button"
@@ -129,14 +129,14 @@ export function SpendingChart({
             })}
           </svg>
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-sand-400">
+            <span className="text-xs text-ink-500">
               {focusedCategory ? focusedCategory.label : "Total"}
             </span>
-            <span className="font-display text-2xl font-semibold text-sand-50">
+            <span className="font-display text-2xl font-semibold text-ink-950">
               {formatDollars(focusedCategory ? focusedCategory.total : totalAmount)}
             </span>
             {focusedCategory && (
-              <span className="text-xs text-sand-500">
+              <span className="text-xs text-ink-500">
                 {Math.round((focusedCategory.total / totalAmount) * 100)}% of total
               </span>
             )}
@@ -152,7 +152,7 @@ export function SpendingChart({
               onMouseEnter={() => setHovered(slice.type)}
               onMouseLeave={() => setHovered(null)}
               className={`card-surface flex w-full items-center gap-2.5 px-3 py-2.5 text-left transition-transform active:scale-[0.97] ${
-                selected === slice.type ? "border-sand-200 bg-sand-100/10" : "hover:border-ink-600"
+                selected === slice.type ? "border-hunter-500 bg-hunter-500/10" : "hover:border-paper-400"
               }`}
             >
               <span
@@ -160,9 +160,9 @@ export function SpendingChart({
                 style={{ backgroundColor: slice.color }}
                 aria-hidden="true"
               />
-              <span className="min-w-0 flex-1 truncate text-sm text-sand-200">{slice.label}</span>
-              <span className="shrink-0 text-sm font-medium text-sand-50">{formatDollars(slice.total)}</span>
-              <span className="w-10 shrink-0 text-right text-xs text-sand-500">
+              <span className="min-w-0 flex-1 truncate text-sm text-ink-700">{slice.label}</span>
+              <span className="shrink-0 text-sm font-medium text-ink-950">{formatDollars(slice.total)}</span>
+              <span className="w-10 shrink-0 text-right text-xs text-ink-500">
                 {Math.round(slice.fraction * 100)}%
               </span>
             </button>
@@ -173,11 +173,11 @@ export function SpendingChart({
       {selectedCategory && (
         <div className="card-surface mt-6 p-4">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-sand-50">{selectedCategory.label} items</h2>
+            <h2 className="text-sm font-semibold text-ink-950">{selectedCategory.label} items</h2>
             <button
               type="button"
               onClick={() => setSelected(null)}
-              className="rounded-full px-2 py-1 text-xs text-sand-400 underline transition-transform active:scale-90"
+              className="rounded-full px-2 py-1 text-xs text-ink-500 underline transition-transform active:scale-90"
             >
               Clear
             </button>
@@ -185,11 +185,11 @@ export function SpendingChart({
           <ul className="space-y-1.5">
             {selectedCategory.items.map((item) => (
               <li key={item.id} className="flex items-center justify-between text-sm">
-                <span className="min-w-0 truncate text-sand-300">
+                <span className="min-w-0 truncate text-ink-700">
                   {item.title}
                   {item.due_date ? ` · ${item.due_date}` : ""}
                 </span>
-                <span className="shrink-0 font-medium text-sand-50">{formatDollars(item.amount)}</span>
+                <span className="shrink-0 font-medium text-ink-950">{formatDollars(item.amount)}</span>
               </li>
             ))}
           </ul>
@@ -200,7 +200,7 @@ export function SpendingChart({
         <button
           type="button"
           onClick={() => setShowTable((v) => !v)}
-          className="rounded-full px-3 py-1.5 text-xs text-sand-400 underline transition-transform active:scale-90"
+          className="rounded-full px-3 py-1.5 text-xs text-ink-500 underline transition-transform active:scale-90"
         >
           {showTable ? "Hide table view" : "View as table"}
         </button>
@@ -210,7 +210,7 @@ export function SpendingChart({
         <table className="mt-3 w-full text-sm">
           <caption className="sr-only">Spending by category for {periodLabel}</caption>
           <thead>
-            <tr className="border-b border-ink-700 text-left text-xs uppercase tracking-wide text-sand-500">
+            <tr className="border-b border-paper-300 text-left text-xs uppercase tracking-wide text-ink-500">
               <th className="py-1.5 font-medium">Category</th>
               <th className="py-1.5 text-right font-medium">Amount</th>
               <th className="py-1.5 text-right font-medium">Share</th>
@@ -218,20 +218,20 @@ export function SpendingChart({
           </thead>
           <tbody>
             {slices.map((slice) => (
-              <tr key={slice.type} className="border-b border-ink-800">
-                <td className="py-1.5 text-sand-200">{slice.label}</td>
-                <td className="py-1.5 text-right tabular-nums text-sand-50">{formatDollars(slice.total)}</td>
-                <td className="py-1.5 text-right tabular-nums text-sand-400">
+              <tr key={slice.type} className="border-b border-paper-200">
+                <td className="py-1.5 text-ink-700">{slice.label}</td>
+                <td className="py-1.5 text-right tabular-nums text-ink-950">{formatDollars(slice.total)}</td>
+                <td className="py-1.5 text-right tabular-nums text-ink-500">
                   {Math.round(slice.fraction * 100)}%
                 </td>
               </tr>
             ))}
             <tr>
-              <td className="pt-2 font-medium text-sand-50">Total</td>
-              <td className="pt-2 text-right font-medium tabular-nums text-sand-50">
+              <td className="pt-2 font-medium text-ink-950">Total</td>
+              <td className="pt-2 text-right font-medium tabular-nums text-ink-950">
                 {formatDollars(totalAmount)}
               </td>
-              <td className="pt-2 text-right tabular-nums text-sand-400">100%</td>
+              <td className="pt-2 text-right tabular-nums text-ink-500">100%</td>
             </tr>
           </tbody>
         </table>

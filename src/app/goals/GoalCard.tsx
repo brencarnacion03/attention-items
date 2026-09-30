@@ -38,7 +38,7 @@ function daysUntil(dateISO: string): number {
 
 /** A wave-filled progress indicator with milestone ticks at 25/50/75%, instead of a flat bar. */
 function LiquidProgressBar({ pct, reached }: { pct: number; reached: boolean }) {
-  const fillColor = reached ? "#74ab7e" : "#3c6b43";
+  const fillColor = reached ? "#4ade80" : "#16a34a";
   return (
     <div className="relative h-4 w-full overflow-hidden rounded-full bg-white">
       {[25, 50, 75].map((m) => (
@@ -109,14 +109,14 @@ function CoverPicker({
         }`}
       />
       <div
-        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-ink-700 bg-ink-950 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
+        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-paper-300 bg-white pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
           visible ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-ink-600" />
+        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-paper-400" />
 
         <div className="px-5 pb-1 pt-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-sand-500">Choose a cover</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-500">Choose a cover</p>
         </div>
 
         <div className="grid grid-cols-3 gap-3 px-5 pt-3">
@@ -136,7 +136,7 @@ function CoverPicker({
               >
                 <GoalIconGlyph goalIcon={icon.key} size={30} />
               </span>
-              <span className="text-center text-[11px] leading-tight text-sand-300">{icon.label}</span>
+              <span className="text-center text-[11px] leading-tight text-ink-700">{icon.label}</span>
             </button>
           ))}
         </div>
@@ -156,14 +156,14 @@ function CoverPicker({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="w-full rounded-xl border border-ink-600 py-3 text-sm font-medium text-sand-200 transition-transform active:scale-[0.98]"
+            className="w-full rounded-xl border border-paper-400 py-3 text-sm font-medium text-ink-700 transition-transform active:scale-[0.98]"
           >
             Upload a photo instead
           </button>
           <button
             type="button"
             onClick={close}
-            className="mt-2 w-full rounded-xl py-3 text-sm font-medium text-sand-400 transition-transform active:scale-[0.98]"
+            className="mt-2 w-full rounded-xl py-3 text-sm font-medium text-ink-500 transition-transform active:scale-[0.98]"
           >
             Cancel
           </button>
@@ -306,7 +306,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           className={`relative select-none ${dragging ? "" : "transition-transform duration-200 ease-out"}`}
         >
           {hasCover ? (
-            <div className="relative h-32 w-full overflow-hidden bg-ink-800">
+            <div className="relative h-32 w-full overflow-hidden bg-paper-200">
               {goal.cover_image_url ? (
                 <img src={goal.cover_image_url} alt="" className="absolute inset-0 h-full w-full object-cover" />
               ) : (
@@ -320,14 +320,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-3 bottom-2">
                 <div className="flex items-center gap-2">
-                  <p className="font-display truncate text-xl font-semibold italic text-sand-50">{goal.title}</p>
+                  <p className="font-display truncate text-xl font-semibold italic text-white">{goal.title}</p>
                   {reached && (
                     <span className="shrink-0 rounded-full bg-hunter-400/20 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
                       🎉 Reached
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-xs text-sand-100/90">
+                <p className="mt-0.5 text-xs text-white/90">
                   {formatDollars(goal.current_amount)} of {formatDollars(goal.target_amount)}
                   {goal.target_date && <> · {remaining >= 0 ? `${remaining}d left` : "past due"}</>}
                 </p>
@@ -336,14 +336,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           ) : (
             <div className="bg-[var(--background)] px-4 pb-2 pt-4">
               <div className="flex items-center gap-2">
-                <p className="font-display truncate text-xl font-semibold italic text-sand-100">{goal.title}</p>
+                <p className="font-display truncate text-xl font-semibold italic text-ink-950">{goal.title}</p>
                 {reached && (
-                  <span className="shrink-0 rounded-full bg-hunter-400/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
+                  <span className="shrink-0 rounded-full bg-hunter-600/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-700">
                     🎉 Reached
                   </span>
                 )}
               </div>
-              <p className="mt-0.5 text-xs text-sand-400">
+              <p className="mt-0.5 text-xs text-ink-500">
                 {formatDollars(goal.current_amount)} of {formatDollars(goal.target_amount)}
                 {goal.target_date && <> · {remaining >= 0 ? `${remaining}d left` : "past due"}</>}
               </p>
@@ -359,14 +359,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           className={`block w-full ${hasHistory ? "cursor-pointer active:scale-[0.99]" : "cursor-default"} transition-transform`}
         >
           <LiquidProgressBar pct={pct} reached={reached} />
-          <p className="mt-1 text-right text-xs text-sand-500">{Math.round(pct)}%</p>
+          <p className="mt-1 text-right text-xs text-ink-500">{Math.round(pct)}%</p>
         </button>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setAdding((v) => !v)}
-            className="rounded-full border border-ink-600 px-3 py-1.5 text-xs font-medium text-sand-200 transition-transform active:scale-90"
+            className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-medium text-ink-700 transition-transform active:scale-90"
           >
             {adding ? "Cancel" : "+ Add money"}
           </button>
@@ -375,7 +375,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             type="button"
             onClick={() => setPickerOpen(true)}
             disabled={uploadingCover}
-            className="rounded-full px-3 py-1.5 text-xs font-medium text-sand-400 transition-transform active:scale-90 disabled:opacity-50"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-500 transition-transform active:scale-90 disabled:opacity-50"
           >
             {uploadingCover ? "Uploading..." : hasCover ? "Change cover" : "+ Cover"}
           </button>
@@ -384,7 +384,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             <button
               type="button"
               onClick={() => setHistoryOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-sand-400 transition-transform active:scale-90"
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-ink-500 transition-transform active:scale-90"
             >
               History ({contributions.length})
               <ChevronIcon expanded={historyOpen} />
@@ -407,13 +407,13 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="$ amount"
-                className="w-28 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+                className="w-28 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
               />
               <button
                 type="button"
                 onClick={submitAdd}
                 disabled={isPending}
-                className="rounded-xl bg-hunter-600 px-3 py-1.5 text-sm font-medium text-sand-50 transition-transform active:scale-90 disabled:opacity-50"
+                className="rounded-xl bg-hunter-600 px-3 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
               >
                 {isPending ? "Adding..." : "Save"}
               </button>
@@ -431,17 +431,17 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             }`}
           >
             <div className="overflow-hidden">
-              <ul className="max-h-48 space-y-1 overflow-y-auto overscroll-contain border-t border-ink-800 pr-0.5 pt-2">
+              <ul className="max-h-48 space-y-1 overflow-y-auto overscroll-contain border-t border-paper-300 pr-0.5 pt-2">
                 {contributions.map((c) => (
                   <li key={c.id} className="flex items-center justify-between text-xs">
-                    <span className="text-sand-400">{formatDate(c.contributed_at)}</span>
+                    <span className="text-ink-500">{formatDate(c.contributed_at)}</span>
                     <span className="flex items-center gap-2">
-                      <span className="font-medium text-sand-200">{formatDollars(c.amount)}</span>
+                      <span className="font-medium text-ink-700">{formatDollars(c.amount)}</span>
                       <button
                         type="button"
                         onClick={() => startTransition(() => deleteContribution(c.id))}
                         disabled={isPending}
-                        className="rounded-full px-1.5 py-0.5 text-sand-500/70 underline transition-transform active:scale-90 disabled:opacity-50"
+                        className="rounded-full px-1.5 py-0.5 text-ink-400 underline transition-transform active:scale-90 disabled:opacity-50"
                       >
                         Remove
                       </button>

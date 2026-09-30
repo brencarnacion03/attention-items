@@ -77,31 +77,31 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
         }`}
       />
       <div
-        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-ink-700 bg-ink-950 shadow-2xl transition-transform duration-[220ms] ease-out ${
+        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[88vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-paper-300 bg-white shadow-2xl transition-transform duration-[220ms] ease-out ${
           visible ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-ink-600" />
+        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-paper-400" />
 
         <div className="flex items-start justify-between px-5 pb-1 pt-4">
-          <h2 className="text-sm font-semibold text-sand-100">{dateLabel}</h2>
+          <h2 className="text-sm font-semibold text-ink-950">{dateLabel}</h2>
           <button
             type="button"
             onClick={close}
             aria-label="Close"
-            className="-m-1.5 rounded-full p-1.5 text-sand-500 transition-transform active:scale-90 hover:text-sand-100"
+            className="-m-1.5 rounded-full p-1.5 text-ink-500 transition-transform active:scale-90 hover:text-ink-950"
           >
             &times;
           </button>
         </div>
 
         <form action={handleSubmit} className="space-y-3 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2">
-          <div className="flex rounded-xl bg-ink-800 p-1 text-sm">
+          <div className="flex rounded-xl bg-paper-200 p-1 text-sm">
             <button
               type="button"
               onClick={() => setMode("one-time")}
               className={`flex-1 rounded-lg py-2 font-medium transition-all ${
-                mode === "one-time" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+                mode === "one-time" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
               }`}
             >
               One-time
@@ -110,7 +110,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               type="button"
               onClick={() => setMode("recurring")}
               className={`flex-1 rounded-lg py-2 font-medium transition-all ${
-                mode === "recurring" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+                mode === "recurring" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
               }`}
             >
               Recurring monthly
@@ -122,7 +122,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
             required
             autoFocus
             placeholder="e.g. Pay furniture installment"
-            className="w-full rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-600"
+            className="w-full rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-500"
           />
 
           <div className="flex gap-2">
@@ -138,7 +138,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
                 </option>
               ))}
             </select>
-            <label className="flex items-center gap-1.5 text-sm text-sand-200">
+            <label className="flex items-center gap-1.5 text-sm text-ink-700">
               $
               <input
                 type="number"
@@ -146,7 +146,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
                 min={0}
                 step="0.01"
                 placeholder="optional"
-                className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-600"
+                className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-500"
               />
             </label>
           </div>
@@ -161,19 +161,19 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
               <input
                 name="address"
                 placeholder="Address (optional)"
-                className="flex-1 rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-600"
+                className="flex-1 rounded-xl border border-sand-300 bg-sand-100 px-3 py-2.5 text-base text-ink-950 placeholder:text-ink-500"
               />
             </div>
           )}
 
           {mode === "recurring" && (
-            <label className="flex items-center gap-1.5 text-sm text-sand-200">
+            <label className="flex items-center gap-1.5 text-sm text-ink-700">
               <input type="checkbox" name="email_reminder" defaultChecked />
               Email reminder a few days before
             </label>
           )}
 
-          <p className="text-xs text-sand-500">
+          <p className="text-xs text-ink-500">
             {mode === "recurring"
               ? `Repeats on day ${dayOfMonth} of every month${
                   dayOfMonth > 28 ? " (or the last day, in shorter months)" : ""
@@ -186,7 +186,7 @@ export function AddEventModal({ dateISO, onClose }: { dateISO: string; onClose: 
           <button
             type="submit"
             disabled={isPending}
-            className="w-full rounded-xl bg-hunter-600 py-3 text-base font-semibold text-sand-50 transition-transform active:scale-[0.98] disabled:opacity-50"
+            className="w-full rounded-xl bg-hunter-600 py-3 text-base font-semibold text-white transition-transform active:scale-[0.98] disabled:opacity-50"
           >
             {isPending ? "Adding..." : "Add"}
           </button>

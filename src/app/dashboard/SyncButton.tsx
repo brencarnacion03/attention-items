@@ -28,7 +28,7 @@ export function SyncButton() {
       <button
         onClick={handleClick}
         disabled={syncing}
-        className="rounded-full border border-ink-600 px-3 py-1.5 text-sm font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
+        className="rounded-full border border-paper-400 px-3 py-1.5 text-sm font-medium text-ink-700 transition-transform hover:bg-paper-100 active:scale-90 disabled:opacity-50"
       >
         {syncing ? "Syncing..." : "Sync now"}
       </button>

@@ -113,11 +113,11 @@ export function ItemRow({ item }: { item: AttentionItem }) {
     >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-sand-100">
+          <p className="truncate text-sm font-medium text-ink-950">
             {item.title}
             {item.amount != null ? ` · $${item.amount.toFixed(2)}` : ""}
           </p>
-          <div className="text-xs text-sand-400">
+          <div className="text-xs text-ink-500">
             {TYPE_LABEL[item.type]}
             {item.due_date ? ` · due ${item.due_date}` : ""}
             {item.event_time ? ` at ${formatTime12h(item.event_time)}` : ""}
@@ -135,7 +135,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
                 <button
                   type="button"
                   onClick={() => (draftOpen ? setDraftOpen(false) : openDraft())}
-                  className="underline transition-colors hover:text-sand-300"
+                  className="font-medium text-hunter-600 underline transition-colors hover:text-hunter-700"
                 >
                   {draftOpen ? "Hide reply" : "Draft reply"}
                 </button>
@@ -150,8 +150,8 @@ export function ItemRow({ item }: { item: AttentionItem }) {
             aria-label={editing ? "Cancel editing" : "Edit"}
             className={`rounded-full border p-1.5 transition-transform active:scale-90 ${
               editing
-                ? "border-sand-300 bg-sand-100/10 text-sand-100"
-                : "border-ink-600 text-sand-300 hover:bg-ink-800"
+                ? "border-hunter-600 bg-hunter-600/10 text-hunter-700"
+                : "border-paper-400 text-ink-700 hover:bg-paper-100"
             }`}
           >
             <PencilIcon />
@@ -161,14 +161,14 @@ export function ItemRow({ item }: { item: AttentionItem }) {
               <button
                 onClick={() => act("handled")}
                 disabled={isPending}
-                className="rounded-full border border-ink-600 px-3 py-1.5 text-xs font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
+                className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-medium text-ink-700 transition-transform hover:bg-paper-100 active:scale-90 disabled:opacity-50"
               >
                 Handled
               </button>
               <button
                 onClick={() => act("dismissed")}
                 disabled={isPending}
-                className="rounded-full border border-ink-600 px-3 py-1.5 text-xs font-medium text-sand-200 transition-transform hover:bg-ink-800 active:scale-90 disabled:opacity-50"
+                className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-medium text-ink-700 transition-transform hover:bg-paper-100 active:scale-90 disabled:opacity-50"
               >
                 Dismiss
               </button>
@@ -183,13 +183,13 @@ export function ItemRow({ item }: { item: AttentionItem }) {
         }`}
       >
         <div className="overflow-hidden">
-          <form action={handleSubmit} className="space-y-2 border-t border-ink-800 pt-3">
+          <form action={handleSubmit} className="space-y-2 border-t border-paper-300 pt-3">
             <div className="flex flex-wrap gap-2">
               <input
                 name="title"
                 required
                 defaultValue={item.title}
-                className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+                className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
               />
               <select
                 name="type"
@@ -209,7 +209,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
                 defaultValue={item.due_date ?? ""}
                 className="rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950"
               />
-              <label className="flex items-center gap-1.5 text-sm text-sand-200">
+              <label className="flex items-center gap-1.5 text-sm text-ink-700">
                 $
                 <input
                   type="number"
@@ -218,7 +218,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
                   step="0.01"
                   defaultValue={item.amount ?? ""}
                   placeholder="optional"
-                  className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+                  className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
                 />
               </label>
               {showTimeAndAddress && (
@@ -233,7 +233,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
                     name="address"
                     defaultValue={item.address ?? ""}
                     placeholder="Address (optional)"
-                    className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+                    className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
                   />
                 </>
               )}
@@ -243,14 +243,14 @@ export function ItemRow({ item }: { item: AttentionItem }) {
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-sand-50 transition-transform active:scale-90 disabled:opacity-50"
+                className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
               >
                 {isPending ? "Saving..." : "Save"}
               </button>
               <button
                 type="button"
                 onClick={closeEdit}
-                className="rounded-xl px-4 py-1.5 text-sm font-medium text-sand-400 transition-transform active:scale-90"
+                className="rounded-xl px-4 py-1.5 text-sm font-medium text-ink-500 transition-transform active:scale-90"
               >
                 Cancel
               </button>
@@ -268,12 +268,12 @@ export function ItemRow({ item }: { item: AttentionItem }) {
           }`}
         >
           <div className="overflow-hidden">
-            <div className="space-y-2 border-t border-ink-800 pt-3">
-              {isDrafting && <p className="text-xs text-sand-400">Drafting a reply…</p>}
+            <div className="space-y-2 border-t border-paper-300 pt-3">
+              {isDrafting && <p className="text-xs text-ink-500">Drafting a reply…</p>}
               {draftError && <p className="text-xs text-red-500">{draftError}</p>}
               {draft && (
                 <>
-                  <p className="text-xs text-sand-500">
+                  <p className="text-xs text-ink-500">
                     To {draft.to} · {draft.subject}
                   </p>
                   <textarea
@@ -287,14 +287,14 @@ export function ItemRow({ item }: { item: AttentionItem }) {
                       href={gmailComposeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-xl bg-hunter-600 px-3 py-1.5 text-xs font-medium text-sand-50 transition-transform active:scale-90"
+                      className="rounded-xl bg-hunter-600 px-3 py-1.5 text-xs font-medium text-white transition-transform active:scale-90"
                     >
                       Open in Gmail
                     </a>
                     <button
                       type="button"
                       onClick={() => setDraftOpen(false)}
-                      className="rounded-xl px-3 py-1.5 text-xs font-medium text-sand-400 transition-transform active:scale-90"
+                      className="rounded-xl px-3 py-1.5 text-xs font-medium text-ink-500 transition-transform active:scale-90"
                     >
                       Close
                     </button>

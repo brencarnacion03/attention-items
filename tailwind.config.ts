@@ -15,19 +15,28 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // App theme: hunter green + beige ("sand") on near-black ("ink").
+        // Bright, light-mode theme: vivid hunter-green brand accent, warm
+        // white "paper" surfaces/borders, a dark "ink" text scale, and
+        // "sand" kept as the light cream tone used specifically for form
+        // field chrome (it was already light - it just didn't need to change).
+        paper: {
+          50: "#fdfbf5",
+          100: "#f7f2e6",
+          200: "#efe6d1",
+          300: "#ddd0ac",
+          400: "#c7b78d",
+        },
         ink: {
-          950: "#070d09",
-          900: "#0f1c13",
-          800: "#182a1e",
-          700: "#233a29",
-          600: "#324f39",
+          950: "#1c1a14",
+          700: "#4a463c",
+          500: "#7d7768",
+          400: "#a39980",
         },
         hunter: {
-          400: "#74ab7e",
-          500: "#568a5d",
-          600: "#3c6b43",
-          700: "#2d5233",
+          400: "#4ade80",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
         },
         sand: {
           50: "#f6f1e4",

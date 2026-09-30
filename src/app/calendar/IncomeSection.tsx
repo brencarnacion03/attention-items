@@ -58,13 +58,13 @@ export function IncomeSection({
   return (
     <div className="card-surface mt-3 px-4 py-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-sand-100">Income for {monthLabel}</span>
+        <span className="text-sm font-medium text-ink-950">Income for {monthLabel}</span>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-semibold text-hunter-400">{formatDollars(total)}</span>
+          <span className="text-sm font-semibold text-hunter-600">{formatDollars(total)}</span>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="rounded-full px-2 py-1 text-xs text-sand-400 underline transition-transform active:scale-90"
+            className="rounded-full px-2 py-1 text-xs text-ink-500 underline transition-transform active:scale-90"
           >
             {open ? "Close" : "+ Add income"}
           </button>
@@ -74,18 +74,18 @@ export function IncomeSection({
       {entries.length > 0 && (
         <ul className="mt-2 space-y-1">
           {entries.map((entry) => (
-            <li key={entry.id} className="flex items-center justify-between text-xs text-sand-400">
+            <li key={entry.id} className="flex items-center justify-between text-xs text-ink-500">
               <span className="min-w-0 truncate">
                 {entry.title || "Income"} &middot; {entry.date}
-                {entry.recurring && <span className="text-sand-500/70"> &middot; recurring</span>}
+                {entry.recurring && <span className="text-ink-400"> &middot; recurring</span>}
               </span>
               <span className="flex shrink-0 items-center gap-2">
-                <span className="font-medium text-sand-200">{formatDollars(entry.amount)}</span>
+                <span className="font-medium text-ink-700">{formatDollars(entry.amount)}</span>
                 <button
                   type="button"
                   onClick={() => handleRemove(entry)}
                   disabled={isPending}
-                  className="rounded-full px-1.5 py-0.5 text-sand-500/70 underline transition-transform hover:text-sand-400 active:scale-90 disabled:opacity-50"
+                  className="rounded-full px-1.5 py-0.5 text-ink-400 underline transition-transform hover:text-ink-500 active:scale-90 disabled:opacity-50"
                 >
                   {entry.recurring ? "Stop series" : "Remove"}
                 </button>
@@ -96,13 +96,13 @@ export function IncomeSection({
       )}
 
       {open && (
-        <form ref={formRef} action={handleSubmit} className="mt-3 space-y-2 border-t border-ink-700 pt-3">
-          <div className="flex rounded-xl bg-ink-800 p-1 text-sm">
+        <form ref={formRef} action={handleSubmit} className="mt-3 space-y-2 border-t border-paper-300 pt-3">
+          <div className="flex rounded-xl bg-paper-200 p-1 text-sm">
             <button
               type="button"
               onClick={() => setMode("one-time")}
               className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
-                mode === "one-time" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+                mode === "one-time" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
               }`}
             >
               One-time
@@ -111,7 +111,7 @@ export function IncomeSection({
               type="button"
               onClick={() => setMode("recurring")}
               className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
-                mode === "recurring" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+                mode === "recurring" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
               }`}
             >
               Recurring paycheck
@@ -122,7 +122,7 @@ export function IncomeSection({
             <input
               name="title"
               placeholder="e.g. Paycheck (optional)"
-              className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+              className="min-w-[160px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
             />
             <input
               type="number"
@@ -131,7 +131,7 @@ export function IncomeSection({
               step="0.01"
               required
               placeholder="$"
-              className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+              className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
             />
 
             {mode === "one-time" ? (
@@ -155,7 +155,7 @@ export function IncomeSection({
                     </option>
                   ))}
                 </select>
-                <label className="flex items-center gap-1.5 text-xs text-sand-400">
+                <label className="flex items-center gap-1.5 text-xs text-ink-500">
                   Starting
                   <input
                     type="date"
@@ -171,14 +171,14 @@ export function IncomeSection({
             <button
               type="submit"
               disabled={isPending}
-              className="rounded-xl bg-hunter-600 px-3 py-1.5 text-sm font-medium text-sand-50 transition-transform active:scale-90 disabled:opacity-50"
+              className="rounded-xl bg-hunter-600 px-3 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
             >
               {isPending ? "Adding..." : "Add"}
             </button>
           </div>
 
           {mode === "recurring" && (
-            <p className="text-xs text-sand-500">
+            <p className="text-xs text-ink-500">
               Adds a paycheck every {frequency === "weekly" ? "week" : "2 weeks"} - it&rsquo;ll show up on
               the calendar automatically, no need to re-enter it each time.
             </p>

@@ -33,12 +33,12 @@ export default async function GoalsPage() {
 
   return (
     <main className="mx-auto max-w-2xl p-8 pb-28">
-      <h1 className="font-display mb-6 text-2xl font-semibold text-sand-50">Savings goals</h1>
+      <h1 className="font-display mb-6 text-2xl font-semibold text-ink-950">Savings goals</h1>
 
       <AddGoalForm />
 
       {(goals ?? []).length === 0 ? (
-        <p className="rounded-md border border-dashed border-sand-400/30 p-6 text-center text-sm text-sand-400">
+        <p className="rounded-md border border-dashed border-ink-950/15 p-6 text-center text-sm text-ink-500">
           No goals yet. Add one above to start tracking progress.
         </p>
       ) : (

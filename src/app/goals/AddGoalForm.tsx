@@ -26,15 +26,15 @@ export function AddGoalForm() {
       action={handleSubmit}
       className="card-surface mb-6 space-y-3 p-4"
     >
-      <span className="text-sm font-medium text-sand-100">Add a savings goal</span>
+      <span className="text-sm font-medium text-ink-950">Add a savings goal</span>
       <div className="flex flex-wrap gap-2">
         <input
           name="title"
           required
           placeholder="e.g. Emergency fund"
-          className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+          className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
         />
-        <label className="flex items-center gap-1.5 text-sm text-sand-200">
+        <label className="flex items-center gap-1.5 text-sm text-ink-700">
           $
           <input
             type="number"
@@ -43,7 +43,7 @@ export function AddGoalForm() {
             step="0.01"
             required
             placeholder="Target"
-            className="w-28 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+            className="w-28 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
           />
         </label>
         <input
@@ -54,7 +54,7 @@ export function AddGoalForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-sand-50 transition-transform active:scale-90 disabled:opacity-50"
+          className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
         >
           {isPending ? "Adding..." : "Add"}
         </button>

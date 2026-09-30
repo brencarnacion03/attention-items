@@ -46,13 +46,13 @@ export function AddItemForm() {
       className="card-surface mb-6 space-y-3 p-4"
     >
       <div className="flex items-center gap-3">
-        <span className="text-sm font-medium text-sand-100">Add an item</span>
-        <div className="flex flex-1 rounded-xl bg-ink-800 p-1 text-sm">
+        <span className="text-sm font-medium text-ink-950">Add an item</span>
+        <div className="flex flex-1 rounded-xl bg-paper-200 p-1 text-sm">
           <button
             type="button"
             onClick={() => setMode("one-time")}
             className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
-              mode === "one-time" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+              mode === "one-time" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
             }`}
           >
             One-time
@@ -61,7 +61,7 @@ export function AddItemForm() {
             type="button"
             onClick={() => setMode("recurring")}
             className={`flex-1 rounded-lg py-1.5 font-medium transition-all ${
-              mode === "recurring" ? "bg-sand-200 text-ink-950" : "text-sand-500"
+              mode === "recurring" ? "bg-hunter-600 text-white shadow-sm" : "text-ink-500"
             }`}
           >
             Recurring monthly
@@ -74,7 +74,7 @@ export function AddItemForm() {
           name="title"
           required
           placeholder={mode === "recurring" ? "e.g. Rent" : "e.g. Pay furniture installment"}
-          className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+          className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
         />
         <select
           name="type"
@@ -97,7 +97,7 @@ export function AddItemForm() {
           />
         ) : (
           <>
-            <label className="flex items-center gap-1.5 text-sm text-sand-200">
+            <label className="flex items-center gap-1.5 text-sm text-ink-700">
               Day of month
               <input
                 type="number"
@@ -109,17 +109,17 @@ export function AddItemForm() {
                 className="w-16 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950"
               />
             </label>
-            <span className="basis-full text-xs text-sand-400">
+            <span className="basis-full text-xs text-ink-500">
               Months without that day use the last day of the month instead.
             </span>
-            <label className="flex items-center gap-1.5 text-sm text-sand-200">
+            <label className="flex items-center gap-1.5 text-sm text-ink-700">
               <input type="checkbox" name="email_reminder" defaultChecked />
               Email reminder
             </label>
           </>
         )}
 
-        <label className="flex items-center gap-1.5 text-sm text-sand-200">
+        <label className="flex items-center gap-1.5 text-sm text-ink-700">
           $
           <input
             type="number"
@@ -127,7 +127,7 @@ export function AddItemForm() {
             min={0}
             step="0.01"
             placeholder="optional"
-            className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+            className="w-24 rounded-xl border border-sand-300 bg-sand-100 px-2 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
           />
         </label>
 
@@ -141,7 +141,7 @@ export function AddItemForm() {
             <input
               name="address"
               placeholder="Address (optional)"
-              className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-600"
+              className="min-w-[180px] flex-1 rounded-xl border border-sand-300 bg-sand-100 px-2.5 py-1.5 text-base text-ink-950 placeholder:text-ink-500"
             />
           </>
         )}
@@ -149,7 +149,7 @@ export function AddItemForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-sand-50 transition-transform active:scale-90 disabled:opacity-50"
+          className="rounded-xl bg-hunter-600 px-4 py-1.5 text-sm font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
         >
           {isPending ? "Adding..." : "Add"}
         </button>

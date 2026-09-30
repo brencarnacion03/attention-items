@@ -103,16 +103,15 @@ const CATEGORY_LABEL: Record<ItemType, string> = {
   reservation: "Reservation",
   document: "Document",
 };
-// An earthy, muted palette pulled from the app's own hunter/sand/ink theme
-// instead of stock chart-library primaries, so the donut reads as part of
-// this app rather than a generic dashboard widget.
+// A vivid, well-tested categorical palette (Tailwind's 500 weights) instead
+// of muted earth tones, so the donut pops against the new white background.
 const CATEGORY_COLOR: Record<ItemType, string> = {
-  bill: "#6a9971",
-  renewal: "#c1893f",
-  appointment: "#8a95c2",
-  deadline: "#b5654a",
-  reservation: "#c2a15a",
-  document: "#7d9a99",
+  bill: "#16a34a",
+  renewal: "#f59e0b",
+  appointment: "#3b82f6",
+  deadline: "#ef4444",
+  reservation: "#8b5cf6",
+  document: "#06b6d4",
 };
 
 export default async function SpendingPage({
@@ -194,8 +193,8 @@ export default async function SpendingPage({
             href={spendingHref(g.value, g.value === granularity ? anchor : new Date())}
             className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-transform active:scale-90 ${
               g.value === granularity
-                ? "border-sand-200 bg-sand-200 text-ink-950"
-                : "border-ink-600 text-sand-300 hover:border-sand-400/50"
+                ? "border-hunter-600 bg-hunter-600 text-white"
+                : "border-paper-400 text-ink-700 hover:border-hunter-500/50"
             }`}
           >
             {g.label}
@@ -206,16 +205,16 @@ export default async function SpendingPage({
       <div className="mb-6 flex items-center justify-center gap-4">
         <Link
           href={spendingHref(granularity, prevAnchor)}
-          className="shrink-0 rounded-full px-2 py-1 text-sm text-sand-300 transition-transform active:scale-90"
+          className="shrink-0 rounded-full px-2 py-1 text-sm text-ink-700 transition-transform active:scale-90"
         >
           &larr; Prev
         </Link>
-        <h1 className="font-display text-lg font-semibold text-sand-100 sm:text-xl">
+        <h1 className="font-display text-lg font-semibold text-ink-950 sm:text-xl">
           {periodLabel(granularity, start, end)}
         </h1>
         <Link
           href={spendingHref(granularity, nextAnchor)}
-          className="shrink-0 rounded-full px-2 py-1 text-sm text-sand-300 transition-transform active:scale-90"
+          className="shrink-0 rounded-full px-2 py-1 text-sm text-ink-700 transition-transform active:scale-90"
         >
           Next &rarr;
         </Link>
@@ -226,18 +225,18 @@ export default async function SpendingPage({
       {(totalIncome > 0 || totalAmount > 0) && (
         <div className="mt-6 space-y-2">
           <div className="card-surface flex items-center justify-between px-4 py-3">
-            <span className="text-sm font-medium text-sand-100">
+            <span className="text-sm font-medium text-ink-950">
               Income for {periodLabel(granularity, start, end)}
             </span>
-            <span className="text-sm font-semibold text-hunter-400">{formatDollars(totalIncome)}</span>
+            <span className="text-sm font-semibold text-hunter-600">{formatDollars(totalIncome)}</span>
           </div>
           <div className="card-surface flex items-center justify-between px-4 py-3">
-            <span className="text-sm font-medium text-sand-100">
+            <span className="text-sm font-medium text-ink-950">
               Net for {periodLabel(granularity, start, end)}
             </span>
             <span
               className={`text-sm font-semibold ${
-                totalIncome - totalAmount >= 0 ? "text-hunter-400" : "text-red-500"
+                totalIncome - totalAmount >= 0 ? "text-hunter-600" : "text-red-500"
               }`}
             >
               {formatDollars(totalIncome - totalAmount)}

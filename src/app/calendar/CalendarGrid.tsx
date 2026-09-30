@@ -16,9 +16,9 @@ export interface CalendarEntry {
 // two tabs read as the same app.
 const URGENCY_DOT: Record<Urgency, string> = {
   red: "bg-red-500",
-  yellow: "bg-[#d99a3c]",
-  green: "bg-hunter-400",
-  blue: "bg-sand-500",
+  yellow: "bg-amber-500",
+  green: "bg-hunter-500",
+  blue: "bg-ink-400",
 };
 
 const TRANSITION_MS = 220;
@@ -67,19 +67,19 @@ function DayInfoSheet({
         }`}
       />
       <div
-        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-ink-700 bg-ink-950 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
+        className={`absolute inset-x-0 bottom-0 mx-auto max-h-[85vh] w-full max-w-md overflow-y-auto rounded-t-2xl border-t border-paper-300 bg-white pb-[max(1rem,env(safe-area-inset-bottom))] shadow-2xl transition-transform duration-[220ms] ease-out ${
           visible ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-ink-600" />
+        <div className="mx-auto mt-3 h-1.5 w-10 rounded-full bg-paper-400" />
 
         <div className="flex items-start justify-between px-5 pb-1 pt-4">
-          <h2 className="text-sm font-semibold text-sand-100">{dateLabel}</h2>
+          <h2 className="text-sm font-semibold text-ink-950">{dateLabel}</h2>
           <button
             type="button"
             onClick={close}
             aria-label="Close"
-            className="-m-1.5 rounded-full p-1.5 text-sand-500 transition-transform active:scale-90 hover:text-sand-100"
+            className="-m-1.5 rounded-full p-1.5 text-ink-500 transition-transform active:scale-90 hover:text-ink-950"
           >
             &times;
           </button>
@@ -87,13 +87,13 @@ function DayInfoSheet({
 
         <ul className="space-y-2 px-5 pt-2">
           {entries.map((item) => (
-            <li key={item.id} className="rounded-2xl border border-ink-700 px-3.5 py-2.5 shadow-sm">
+            <li key={item.id} className="card-surface px-3.5 py-2.5">
               <div className="flex items-start gap-2">
                 <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`} />
-                <span className="min-w-0 break-words text-sm font-medium text-sand-100">{item.title}</span>
+                <span className="min-w-0 break-words text-sm font-medium text-ink-950">{item.title}</span>
               </div>
               {item.amount != null && (
-                <div className="pl-3.5 text-xs text-sand-400">{formatDollars(item.amount)}</div>
+                <div className="pl-3.5 text-xs text-ink-500">{formatDollars(item.amount)}</div>
               )}
             </li>
           ))}
@@ -103,7 +103,7 @@ function DayInfoSheet({
           <button
             type="button"
             onClick={onAddNew}
-            className="w-full rounded-xl bg-hunter-600 py-3 text-base font-semibold text-sand-50 transition-transform active:scale-[0.98]"
+            className="w-full rounded-xl bg-hunter-600 py-3 text-base font-semibold text-white transition-transform active:scale-[0.98]"
           >
             + Add another item
           </button>
@@ -143,7 +143,7 @@ export function CalendarGrid({
 
   return (
     <>
-      <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-medium text-sand-500 sm:gap-1 sm:text-xs">
+      <div className="grid grid-cols-7 gap-0.5 text-center text-[10px] font-medium text-ink-500 sm:gap-1 sm:text-xs">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
           <div key={d} className="truncate">
             {d}
@@ -165,13 +165,13 @@ export function CalendarGrid({
                 setSelectedDay(day);
               }
             }}
-            className={`min-h-[64px] min-w-0 overflow-hidden rounded-xl border border-ink-700 p-1 text-left align-top transition-transform sm:min-h-[100px] sm:p-1.5 ${
-              day ? "cursor-pointer hover:border-ink-600 hover:bg-sand-100/5 active:scale-95" : "cursor-default"
+            className={`min-h-[64px] min-w-0 overflow-hidden rounded-xl border border-paper-300 p-1 text-left align-top transition-transform sm:min-h-[100px] sm:p-1.5 ${
+              day ? "cursor-pointer hover:border-paper-400 hover:bg-paper-100 active:scale-95" : "cursor-default"
             }`}
           >
             {day && (
               <>
-                <div className="text-[10px] text-sand-500 sm:text-xs">{day}</div>
+                <div className="text-[10px] text-ink-500 sm:text-xs">{day}</div>
                 <div className="space-y-1 sm:space-y-1.5">
                   {(entriesByDay[day] ?? []).map((item) => (
                     <div key={item.id} className="min-w-0 text-[10px] sm:text-xs">
@@ -179,12 +179,12 @@ export function CalendarGrid({
                         <span
                           className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`}
                         />
-                        <span className="line-clamp-2 min-w-0 break-words text-left font-semibold text-sand-100">
+                        <span className="line-clamp-2 min-w-0 break-words text-left font-semibold text-ink-950">
                           {item.title}
                         </span>
                       </div>
                       {item.amount != null && (
-                        <div className="truncate pl-2.5 text-left text-sand-500">
+                        <div className="truncate pl-2.5 text-left text-ink-500">
                           {formatDollars(item.amount)}
                         </div>
                       )}
