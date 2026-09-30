@@ -103,7 +103,8 @@ export function SpendingChart({
                   d={donutArcPath(CX, CY, OUTER_R, INNER_R, slice.startAngle, slice.endAngle)}
                   fill={slice.color}
                   stroke="#000"
-                  strokeWidth={2}
+                  strokeWidth={1}
+                  strokeLinejoin="round"
                   tabIndex={0}
                   role="button"
                   aria-label={`${slice.label}: ${formatDollars(slice.total)}, ${Math.round(slice.fraction * 100)} percent`}
