@@ -31,7 +31,7 @@ export default function LoginPage() {
       </div>
       <button
         onClick={handleSignIn}
-        className="rounded-full bg-hunter-600 px-6 py-3 text-sm font-medium text-white shadow-[0_14px_32px_-16px_rgba(22,163,74,0.5)] transition-transform hover:bg-hunter-500 active:scale-90"
+        className="rounded-full bg-hunter-600 px-6 py-3 text-sm font-medium text-white shadow-[0_14px_32px_-16px_rgba(0,109,44,0.5)] transition-transform hover:bg-hunter-500 active:scale-90"
       >
         Sign in with Google
       </button>

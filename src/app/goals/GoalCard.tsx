@@ -38,7 +38,7 @@ function daysUntil(dateISO: string): number {
 
 /** A wave-filled progress indicator with milestone ticks at 25/50/75%, instead of a flat bar. */
 function LiquidProgressBar({ pct, reached }: { pct: number; reached: boolean }) {
-  const fillColor = reached ? "#4ade80" : "#16a34a";
+  const fillColor = reached ? "#34a65f" : "#006d2c";
   return (
     <div className="relative h-4 w-full overflow-hidden rounded-full bg-white">
       {[25, 50, 75].map((m) => (

@@ -32,11 +32,14 @@ const config: Config = {
           500: "#7d7768",
           400: "#a39980",
         },
+        // Anchored on the exact requested green (#006d2c) as the base/600
+        // shade, with lighter/darker tints of the same hue derived for
+        // glow accents and hover states.
         hunter: {
-          400: "#4ade80",
-          500: "#22c55e",
-          600: "#16a34a",
-          700: "#15803d",
+          400: "#34a65f",
+          500: "#158f45",
+          600: "#006d2c",
+          700: "#00551f",
         },
         sand: {
           50: "#f6f1e4",

@@ -106,7 +106,7 @@ const CATEGORY_LABEL: Record<ItemType, string> = {
 // A vivid, well-tested categorical palette (Tailwind's 500 weights) instead
 // of muted earth tones, so the donut pops against the new white background.
 const CATEGORY_COLOR: Record<ItemType, string> = {
-  bill: "#16a34a",
+  bill: "#006d2c",
   renewal: "#f59e0b",
   appointment: "#3b82f6",
   deadline: "#ef4444",
