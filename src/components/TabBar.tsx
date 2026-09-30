@@ -84,7 +84,7 @@ export function TabBar({ active }: { active: TabKey }) {
               key={tab.key}
               href={tab.href}
               className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-[11px] font-medium transition-transform active:scale-90 ${
-                isActive ? "text-hunter-600" : "text-ink-400"
+                isActive ? "text-hunter-600" : "text-ink-500"
               }`}
             >
               {tab.icon(isActive)}
