@@ -98,7 +98,7 @@ export default async function DashboardPage() {
     <main className="mx-auto max-w-2xl p-8 pb-28">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h1 className="font-display text-2xl font-semibold italic tracking-tight text-ink-950">
+          <h1 className="text-2xl font-bold tracking-tight text-ink-950">
             {total} {total === 1 ? "thing needs" : "things need"} your attention
           </h1>
           <p className="text-sm text-ink-500">{user.email}</p>
