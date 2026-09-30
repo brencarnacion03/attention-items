@@ -102,7 +102,7 @@ export function SpendingChart({
                   key={slice.type}
                   d={donutArcPath(CX, CY, OUTER_R, INNER_R, slice.startAngle, slice.endAngle)}
                   fill={slice.color}
-                  stroke="#fff"
+                  stroke="#000"
                   strokeWidth={2}
                   tabIndex={0}
                   role="button"
