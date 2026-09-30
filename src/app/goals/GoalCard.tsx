@@ -317,17 +317,16 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
                   </div>
                 </>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute inset-x-3 bottom-2">
                 <div className="flex items-center gap-2">
-                  <p className="font-display truncate text-xl font-semibold italic text-white">{goal.title}</p>
+                  <p className="font-display truncate text-xl font-bold italic text-black">{goal.title}</p>
                   {reached && (
-                    <span className="shrink-0 rounded-full bg-hunter-400/20 px-2 py-0.5 text-[10px] font-semibold text-hunter-400">
+                    <span className="shrink-0 rounded-full bg-hunter-600/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-700">
                       🎉 Reached
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-xs text-white/90">
+                <p className="mt-0.5 text-xs font-bold text-black">
                   {formatDollars(goal.current_amount)} of {formatDollars(goal.target_amount)}
                   {goal.target_date && <> · {remaining >= 0 ? `${remaining}d left` : "past due"}</>}
                 </p>
