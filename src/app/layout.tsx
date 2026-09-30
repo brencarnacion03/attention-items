@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Fraunces } from "next/font/google";
+import { Fraunces, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -22,6 +22,12 @@ const fraunces = Fraunces({
   weight: ["500", "600"],
   style: ["normal", "italic"],
 });
+// Used only for the dashboard's "N things need your attention" heading.
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  weight: ["500", "600"],
+});
 
 export const metadata: Metadata = {
   title: "Attention Items",
@@ -36,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${playfairDisplay.variable} antialiased`}
       >
         {children}
       </body>
