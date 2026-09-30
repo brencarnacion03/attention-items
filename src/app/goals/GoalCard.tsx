@@ -319,14 +319,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
               )}
               <div className="absolute inset-x-3 bottom-2">
                 <div className="flex items-center gap-2">
-                  <p className="font-display truncate text-xl font-bold italic text-black">{goal.title}</p>
+                  <p className="font-display truncate text-xl font-semibold italic text-black">{goal.title}</p>
                   {reached && (
                     <span className="shrink-0 rounded-full bg-hunter-600/15 px-2 py-0.5 text-[10px] font-semibold text-hunter-700">
                       🎉 Reached
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 text-xs font-bold text-black">
+                <p className="mt-0.5 text-xs text-black">
                   {formatDollars(goal.current_amount)} of {formatDollars(goal.target_amount)}
                   {goal.target_date && <> · {remaining >= 0 ? `${remaining}d left` : "past due"}</>}
                 </p>
@@ -358,14 +358,14 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
           className={`block w-full ${hasHistory ? "cursor-pointer active:scale-[0.99]" : "cursor-default"} transition-transform`}
         >
           <LiquidProgressBar pct={pct} reached={reached} />
-          <p className="mt-1 text-right text-xs font-bold text-ink-950">{Math.round(pct)}%</p>
+          <p className="mt-1 text-right text-xs text-ink-950">{Math.round(pct)}%</p>
         </button>
 
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setAdding((v) => !v)}
-            className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90"
+            className="rounded-full border border-paper-400 px-3 py-1.5 text-xs font-medium text-ink-950 transition-transform active:scale-90"
           >
             {adding ? "Cancel" : "+ Add money"}
           </button>
@@ -374,7 +374,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             type="button"
             onClick={() => setPickerOpen(true)}
             disabled={uploadingCover}
-            className="rounded-full px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90 disabled:opacity-50"
+            className="rounded-full px-3 py-1.5 text-xs font-medium text-ink-950 transition-transform active:scale-90 disabled:opacity-50"
           >
             {uploadingCover ? "Uploading..." : hasCover ? "Change cover" : "+ Cover"}
           </button>
@@ -383,7 +383,7 @@ export function GoalCard({ goal, contributions }: { goal: SavingsGoal; contribut
             <button
               type="button"
               onClick={() => setHistoryOpen((v) => !v)}
-              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold text-ink-950 transition-transform active:scale-90"
+              className="flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-ink-950 transition-transform active:scale-90"
             >
               History ({contributions.length})
               <ChevronIcon expanded={historyOpen} />
