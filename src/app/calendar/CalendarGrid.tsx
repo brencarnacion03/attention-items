@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import type { Urgency } from "@/lib/types";
 import { AddEventModal } from "./AddEventModal";
+import { deleteCalendarItem, deleteRecurringSeries, skipRecurringOccurrence } from "./actions";
 
 export interface CalendarEntry {
   id: string;
   title: string;
   urgency: Urgency;
   amount: number | null;
+  /** The attention_items row, when one exists (projected recurring bills have none yet). */
+  itemId?: string;
+  /** Occurrence id ("recurring-<billId>-YYYY-MM") for entries that come from a recurring bill. */
+  sourceId?: string;
+  recurringBillId?: string;
 }
 
 // Matches the dashboard's muted urgency language (see URGENCY_COLOR in
@@ -41,6 +47,9 @@ function DayInfoSheet({
   onClose: () => void;
 }) {
   const [visible, setVisible] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)));
@@ -49,6 +58,24 @@ function DayInfoSheet({
   const close = () => {
     setVisible(false);
     setTimeout(onClose, TRANSITION_MS);
+  };
+
+  // Once the last item on the day is deleted there's nothing left to show.
+  useEffect(() => {
+    if (entries.length === 0) close();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entries.length]);
+
+  const runDelete = (action: () => Promise<void>) => {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await action();
+        setConfirmId(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Could not delete.");
+      }
+    });
   };
 
   useEffect(() => {
@@ -87,17 +114,83 @@ function DayInfoSheet({
 
         <ul className="space-y-2 px-5 pt-2">
           {entries.map((item) => (
-            <li key={item.id} className="card-surface px-3.5 py-2.5">
+            <li
+              key={item.id}
+              className={`card-surface px-3.5 py-2.5 transition-opacity ${isPending ? "opacity-60" : ""}`}
+            >
               <div className="flex items-start gap-2">
                 <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCY_DOT[item.urgency]}`} />
-                <span className="min-w-0 break-words text-sm font-medium text-ink-950">{item.title}</span>
+                <div className="min-w-0 flex-1">
+                  <span className="break-words text-sm font-medium text-ink-950">{item.title}</span>
+                  {item.amount != null && <div className="text-xs text-ink-500">{formatDollars(item.amount)}</div>}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setConfirmId(confirmId === item.id ? null : item.id)}
+                  aria-label={`Delete ${item.title}`}
+                  className="-m-1 shrink-0 rounded-full p-1.5 text-ink-500 transition-transform hover:text-red-600 active:scale-90"
+                >
+                  <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+                    <path
+                      d="M4 7h16M10 11v6M14 11v6M6 7l1 12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-12M9 7V4h6v3"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
               </div>
-              {item.amount != null && (
-                <div className="pl-3.5 text-xs text-ink-500">{formatDollars(item.amount)}</div>
+
+              {confirmId === item.id && (
+                <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-paper-300 pt-2 text-xs">
+                  {item.recurringBillId && item.sourceId ? (
+                    <>
+                      <span className="text-ink-700">Repeats monthly:</span>
+                      <button
+                        type="button"
+                        disabled={isPending}
+                        onClick={() => runDelete(() => skipRecurringOccurrence(item.recurringBillId!, item.sourceId!))}
+                        className="rounded-full bg-red-600 px-3 py-1.5 font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
+                      >
+                        Just this month
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isPending}
+                        onClick={() => runDelete(() => deleteRecurringSeries(item.recurringBillId!))}
+                        className="rounded-full border border-red-600 px-3 py-1.5 font-medium text-red-600 transition-transform active:scale-90 disabled:opacity-50"
+                      >
+                        All months
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-ink-700">Delete this item?</span>
+                      <button
+                        type="button"
+                        disabled={isPending || !item.itemId}
+                        onClick={() => runDelete(() => deleteCalendarItem(item.itemId!))}
+                        className="rounded-full bg-red-600 px-3 py-1.5 font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
+                      >
+                        {isPending ? "Deleting..." : "Delete"}
+                      </button>
+                    </>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setConfirmId(null)}
+                    className="rounded-full px-2 py-1.5 font-medium text-ink-500 transition-transform active:scale-90"
+                  >
+                    Cancel
+                  </button>
+                </div>
               )}
             </li>
           ))}
         </ul>
+        {error && <p className="px-5 pt-2 text-xs text-red-500">{error}</p>}
 
         <div className="px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4">
           <button

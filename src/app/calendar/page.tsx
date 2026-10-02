@@ -48,8 +48,7 @@ export default async function CalendarPage({
     .from("attention_items")
     .select("*")
     .gte("due_date", rangeStart)
-    .lte("due_date", rangeEnd)
-    .neq("status", "dismissed");
+    .lte("due_date", rangeEnd);
 
   const { data: recurringBills } = await supabase.from("recurring_bills").select("*");
 
@@ -95,11 +94,26 @@ export default async function CalendarPage({
 
   for (const item of (items ?? []) as AttentionItem[]) {
     if (!item.due_date) continue;
+    // Dismissed rows still count as "seen" so a deleted recurring occurrence
+    // isn't projected back onto the calendar from its rule.
     seenSourceIds.add(item.source_id);
+    if (item.status === "dismissed") continue;
     const day = Number(item.due_date.slice(8, 10));
+    // Occurrence ids look like "recurring-<billId>-YYYY-MM".
+    const recurringBillId = item.source_id.startsWith("recurring-")
+      ? item.source_id.slice("recurring-".length, -"-YYYY-MM".length)
+      : undefined;
     byDay.set(day, [
       ...(byDay.get(day) ?? []),
-      { id: item.id, title: item.title, urgency: item.urgency, amount: item.amount },
+      {
+        id: item.id,
+        title: item.title,
+        urgency: item.urgency,
+        amount: item.amount,
+        itemId: item.id,
+        sourceId: item.source_id,
+        recurringBillId,
+      },
     ]);
   }
 
@@ -116,7 +130,14 @@ export default async function CalendarPage({
 
     byDay.set(day, [
       ...(byDay.get(day) ?? []),
-      { id: sourceId, title: bill.title, urgency: urgencyForDueDate(dueDate), amount: bill.amount },
+      {
+        id: sourceId,
+        title: bill.title,
+        urgency: urgencyForDueDate(dueDate),
+        amount: bill.amount,
+        sourceId,
+        recurringBillId: bill.id,
+      },
     ]);
   }
 
