@@ -44,6 +44,8 @@ export interface Classification {
   due_date: string | null;
   urgency: Urgency | null;
   auto_handleable: boolean;
+  /** Dollar amount the message states the user will be charged / owes, if any. */
+  amount: number | null;
 }
 
 export interface IncomeEntry {

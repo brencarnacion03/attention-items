@@ -46,23 +46,21 @@ export async function fetchGmailCandidates(accessToken: string, maxResults = 25)
   const candidates = await Promise.all(
     messages.map(async (m) => {
       if (!m.id) return null;
-      const msg = await gmail.users.messages.get({
-        userId: "me",
-        id: m.id,
-        format: "metadata",
-        metadataHeaders: ["Subject", "Date", "From"],
-      });
+      // Full format so the body (where prices live) is available, not just the short
+      // snippet; the classifier only sees the first ~2000 chars of it.
+      const msg = await gmail.users.messages.get({ userId: "me", id: m.id, format: "full" });
 
       const headers = msg.data.payload?.headers ?? [];
       const subject = headerValue(headers, "Subject") || "(no subject)";
       const from = headerValue(headers, "From");
       const dateHeader = headerValue(headers, "Date");
+      const body = messageBodyText(msg.data.payload, msg.data.snippet ?? "");
 
       const candidate: RawCandidate = {
         source: "gmail",
         source_id: m.id,
         heading: subject,
-        detail: `From: ${from}\n${msg.data.snippet ?? ""}`,
+        detail: `From: ${from}\n${body.slice(0, 2000)}`,
         contextDate: dateHeader ? new Date(dateHeader).toISOString() : null,
       };
       return candidate;
@@ -87,6 +85,22 @@ function findPart(part: gmail_v1.Schema$MessagePart | undefined, mimeType: strin
   return null;
 }
 
+/** Readable text of a message: plain-text part if present, else tag-stripped HTML, else the snippet. */
+export function messageBodyText(payload: gmail_v1.Schema$MessagePart | undefined, snippet: string): string {
+  const plainText = findPart(payload, "text/plain");
+  if (plainText) return plainText.trim();
+  const html = findPart(payload, "text/html");
+  if (html) {
+    return html
+      .replace(/<(style|script)[\s\S]*?<\/\1>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  return snippet;
+}
+
 export interface GmailMessageDetail {
   subject: string;
   from: string;
@@ -103,9 +117,7 @@ export async function fetchGmailMessageDetail(accessToken: string, messageId: st
   const subject = headerValue(headers, "Subject") || "(no subject)";
   const from = headerValue(headers, "From");
 
-  const plainText = findPart(msg.data.payload, "text/plain");
-  const html = plainText ? null : findPart(msg.data.payload, "text/html");
-  const body = plainText ?? (html ? html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : msg.data.snippet ?? "");
+  const body = messageBodyText(msg.data.payload, msg.data.snippet ?? "");
 
   return { subject, from, body: body.slice(0, 6000) };
 }

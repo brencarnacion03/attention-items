@@ -36,6 +36,11 @@ const CLASSIFY_TOOL: Anthropic.Tool = {
         description:
           "red = due within 3 days or overdue. yellow = due within 2 weeks. green = due later or no fixed deadline. blue = informational / low stakes. Required when is_attention_item is true.",
       },
+      amount: {
+        type: "number",
+        description:
+          "Dollar amount the user will be charged or owes, ONLY when the message states it explicitly (e.g. a subscription renewal price or a bill total). Omit if no amount is stated - never estimate or guess.",
+      },
       auto_handleable: {
         type: "boolean",
         description:
@@ -73,7 +78,7 @@ export async function classifyCandidate(candidate: RawCandidate): Promise<Classi
   );
 
   if (!toolUse) {
-    return { isAttentionItem: false, type: null, title: null, due_date: null, urgency: null, auto_handleable: false };
+    return { isAttentionItem: false, type: null, title: null, due_date: null, urgency: null, auto_handleable: false, amount: null };
   }
 
   const input = toolUse.input as {
@@ -83,10 +88,11 @@ export async function classifyCandidate(candidate: RawCandidate): Promise<Classi
     due_date?: string;
     urgency?: Classification["urgency"];
     auto_handleable?: boolean;
+    amount?: number;
   };
 
   if (!input.is_attention_item) {
-    return { isAttentionItem: false, type: null, title: null, due_date: null, urgency: null, auto_handleable: false };
+    return { isAttentionItem: false, type: null, title: null, due_date: null, urgency: null, auto_handleable: false, amount: null };
   }
 
   return {
@@ -96,6 +102,7 @@ export async function classifyCandidate(candidate: RawCandidate): Promise<Classi
     due_date: input.due_date ?? null,
     urgency: input.urgency ?? "blue",
     auto_handleable: input.auto_handleable ?? false,
+    amount: typeof input.amount === "number" && Number.isFinite(input.amount) && input.amount > 0 ? input.amount : null,
   };
 }
 

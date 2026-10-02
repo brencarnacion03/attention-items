@@ -54,6 +54,7 @@ export async function syncUser(userId: string): Promise<SyncResult> {
       type: result.type!,
       title: result.title!,
       due_date: result.due_date,
+      amount: result.amount,
       urgency: result.urgency!,
       status: "new" as const,
       auto_handleable: result.auto_handleable,
