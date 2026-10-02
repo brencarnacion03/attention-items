@@ -241,3 +241,22 @@ create policy "Users can update their own goal covers"
 create policy "Users can delete their own goal covers"
   on storage.objects for delete
   using (bucket_id = 'goal-covers' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- Monthly AI chat spend per user (written by the server with the service role;
+-- users can only read their own row). The chat API refuses to answer once
+-- cost_usd reaches the monthly cap.
+create table if not exists public.chat_usage (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  month text not null,
+  input_tokens bigint not null default 0,
+  output_tokens bigint not null default 0,
+  searches int not null default 0,
+  cost_usd numeric(10, 4) not null default 0,
+  primary key (user_id, month)
+);
+
+alter table public.chat_usage enable row level security;
+
+create policy "Users can view their own chat usage"
+  on public.chat_usage for select
+  using (auth.uid() = user_id);

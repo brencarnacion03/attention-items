@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-type TabKey = "dashboard" | "calendar" | "spending" | "goals";
+type TabKey = "dashboard" | "calendar" | "spending" | "goals" | "chat";
 
 function HomeIcon({ filled }: { filled: boolean }) {
   return (
@@ -66,11 +66,29 @@ function TargetIcon({ filled }: { filled: boolean }) {
   );
 }
 
+function ChatIcon({ filled }: { filled: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
+      <path
+        d="M5 4.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6.5L8 20.5v-4H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z"
+        fill={filled ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={filled ? 0 : 2}
+        strokeLinejoin="round"
+      />
+      <circle cx="8.5" cy="10.5" r="1.1" fill={filled ? "white" : "currentColor"} />
+      <circle cx="12" cy="10.5" r="1.1" fill={filled ? "white" : "currentColor"} />
+      <circle cx="15.5" cy="10.5" r="1.1" fill={filled ? "white" : "currentColor"} />
+    </svg>
+  );
+}
+
 const TABS: { key: TabKey; href: string; label: string; icon: (filled: boolean) => React.ReactNode }[] = [
   { key: "dashboard", href: "/dashboard", label: "Home", icon: (f) => <HomeIcon filled={f} /> },
   { key: "calendar", href: "/calendar", label: "Calendar", icon: (f) => <CalendarIcon filled={f} /> },
   { key: "spending", href: "/spending", label: "Spending", icon: (f) => <PieChartIcon filled={f} /> },
   { key: "goals", href: "/goals", label: "Goals", icon: (f) => <TargetIcon filled={f} /> },
+  { key: "chat", href: "/chat", label: "Ask", icon: (f) => <ChatIcon filled={f} /> },
 ];
 
 export function TabBar({ active }: { active: TabKey }) {
