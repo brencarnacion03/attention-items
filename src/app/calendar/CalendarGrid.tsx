@@ -151,7 +151,13 @@ function DayInfoSheet({
                       <button
                         type="button"
                         disabled={isPending}
-                        onClick={() => runDelete(() => skipRecurringOccurrence(item.recurringBillId!, item.sourceId!))}
+                        onClick={() =>
+                          runDelete(() =>
+                            item.itemId
+                              ? deleteCalendarItem(item.itemId)
+                              : skipRecurringOccurrence(item.recurringBillId!, item.sourceId!)
+                          )
+                        }
                         className="rounded-full bg-red-600 px-3 py-1.5 font-medium text-white transition-transform active:scale-90 disabled:opacity-50"
                       >
                         Just this month

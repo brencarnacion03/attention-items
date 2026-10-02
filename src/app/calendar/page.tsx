@@ -89,6 +89,8 @@ export default async function CalendarPage({
 
   const totalIncome = incomeDisplayEntries.reduce((sum, entry) => sum + entry.amount, 0);
 
+  const liveBillIds = new Set(((recurringBills ?? []) as RecurringBill[]).map((b) => b.id));
+
   const byDay = new Map<number, CalendarEntry[]>();
   const seenSourceIds = new Set<string>();
 
@@ -100,9 +102,12 @@ export default async function CalendarPage({
     if (item.status === "dismissed") continue;
     const day = Number(item.due_date.slice(8, 10));
     // Occurrence ids look like "recurring-<billId>-YYYY-MM".
-    const recurringBillId = item.source_id.startsWith("recurring-")
+    // Only treat it as recurring while the rule still exists - once the bill itself is
+    // gone, leftover occurrences behave like ordinary items.
+    const parsedBillId = item.source_id.startsWith("recurring-")
       ? item.source_id.slice("recurring-".length, -"-YYYY-MM".length)
       : undefined;
+    const recurringBillId = parsedBillId && liveBillIds.has(parsedBillId) ? parsedBillId : undefined;
     byDay.set(day, [
       ...(byDay.get(day) ?? []),
       {
