@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { draftReplyForItem, editItem, setItemStatus, type ReplyDraft } from "./actions";
+import { deleteCalendarItem } from "@/app/calendar/actions";
 import { AddressLink } from "./AddressLink";
 import type { AttentionItem, ItemType } from "@/lib/types";
 
@@ -24,6 +25,13 @@ const TYPE_OPTIONS: { value: ItemType; label: string }[] = [
 ];
 
 const NEEDS_TIME_AND_ADDRESS: ItemType[] = ["appointment", "reservation"];
+
+const DELETE_WIDTH = 84;
+const SWIPE_OPEN_THRESHOLD = DELETE_WIDTH * 0.55;
+const SWIPE_START_PX = 6;
+const EXIT_MS = 180;
+// Taps on these must keep working normally, so they never start a swipe.
+const INTERACTIVE = "button, a, input, select, textarea, label";
 
 function formatTime12h(time: string): string {
   const [h, m] = time.split(":").map(Number);
@@ -62,8 +70,47 @@ export function ItemRow({ item }: { item: AttentionItem }) {
   const [draftBody, setDraftBody] = useState("");
   const [draftError, setDraftError] = useState<string | null>(null);
 
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const swipe = useRef<{ id: number; x: number; y: number; from: number; active: boolean } | null>(null);
+
   const act = (status: "handled" | "dismissed") => {
     startTransition(() => setItemStatus(item.id, status));
+  };
+
+  const clampDrag = (x: number) => Math.min(0, Math.max(-DELETE_WIDTH - 16, x));
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isPending || removing || (e.target as HTMLElement).closest(INTERACTIVE)) return;
+    swipe.current = { id: e.pointerId, x: e.clientX, y: e.clientY, from: dragX, active: false };
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const s = swipe.current;
+    if (!s || s.id !== e.pointerId) return;
+    const dx = e.clientX - s.x;
+    if (!s.active) {
+      // Wait until it's clearly a horizontal drag so vertical scrolling and taps are untouched.
+      if (Math.abs(dx) < SWIPE_START_PX || Math.abs(dx) < Math.abs(e.clientY - s.y)) return;
+      s.active = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      setDragging(true);
+    }
+    setDragX(clampDrag(s.from + dx));
+  };
+
+  const endDrag = () => {
+    const s = swipe.current;
+    swipe.current = null;
+    if (!s?.active) return;
+    setDragging(false);
+    setDragX((x) => (x < -SWIPE_OPEN_THRESHOLD ? -DELETE_WIDTH : 0));
+  };
+
+  const handleDelete = () => {
+    setRemoving(true);
+    setTimeout(() => startTransition(() => deleteCalendarItem(item.id)), EXIT_MS);
   };
 
   const closeEdit = () => {
@@ -107,10 +154,29 @@ export function ItemRow({ item }: { item: AttentionItem }) {
 
   return (
     <li
-      className={`card-surface px-4 py-3 transition-all duration-200 ${
-        isPending ? "scale-[0.98] opacity-40" : "scale-100 opacity-100"
+      className={`relative overflow-x-clip rounded-2xl transition-[opacity,transform] duration-200 ${
+        removing ? "scale-95 opacity-0" : isPending ? "scale-[0.98] opacity-40" : "scale-100 opacity-100"
       }`}
     >
+      <div className="absolute inset-y-0 right-0 flex items-stretch" style={{ width: DELETE_WIDTH }}>
+        <button
+          type="button"
+          onClick={handleDelete}
+          disabled={isPending || removing}
+          aria-label={`Delete ${item.title}`}
+          className="flex flex-1 items-center justify-center rounded-2xl bg-red-600 text-sm font-medium text-white transition-transform active:scale-95 disabled:opacity-50"
+        >
+          Delete
+        </button>
+      </div>
+      <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        style={{ transform: `translateX(${dragX}px)`, touchAction: "pan-y" }}
+        className={`card-surface relative px-4 py-3 ${dragging ? "" : "transition-transform duration-200 ease-out"}`}
+      >
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="truncate text-sm font-medium text-ink-950">
@@ -305,6 +371,7 @@ export function ItemRow({ item }: { item: AttentionItem }) {
           </div>
         </div>
       )}
+      </div>
     </li>
   );
 }
